@@ -125,7 +125,6 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   console.log(`Making API call to: ${url}`);
   console.log(`Project ID: ${projectId}`);
-  console.log(`Public Anon Key: ${publicAnonKey}`);
   
   try {
     const response = await fetch(url, {

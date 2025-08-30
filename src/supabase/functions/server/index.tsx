@@ -1,7 +1,7 @@
-import { Hono } from 'npm:hono';
-import { cors } from 'npm:hono/cors';
-import { logger } from 'npm:hono/logger';
-import { createClient } from 'npm:@supabase/supabase-js';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import { createClient } from '@supabase/supabase-js';
 import { initializeDatabase } from './initialization.tsx';
 import * as routes from './routes.tsx';
 
