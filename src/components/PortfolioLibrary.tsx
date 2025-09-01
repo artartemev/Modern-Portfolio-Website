@@ -49,9 +49,9 @@ export function PortfolioLibrary() {
         } else {
           throw new Error('No projects returned from API');
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('API failed, using fallback data:', err);
-        
+
         // Immediately use fallback data when API fails
         try {
           console.log('Loading fallback data...');
@@ -82,9 +82,10 @@ export function PortfolioLibrary() {
           } else {
             throw new Error('Fallback data validation failed');
           }
-        } catch (fallbackError) {
+        } catch (fallbackError: unknown) {
           console.error('Fallback data also failed:', fallbackError);
-          setError(`Unable to load project data: ${err.message}`);
+          const message = fallbackError instanceof Error ? fallbackError.message : 'Unknown error';
+          setError(`Unable to load project data: ${message}`);
           setProjects([]);
           setAvailableTags([]);
         }
@@ -136,7 +137,7 @@ export function PortfolioLibrary() {
         }
         
         return true;
-      } catch (filterError) {
+      } catch (filterError: unknown) {
         console.error('Error filtering project:', project, filterError);
         return false;
       }
