@@ -38,7 +38,7 @@ export function CaseContentBlocks({
 
   const addNewBlock = () => {
     const newBlock: ContentBlock = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       title: '',
       content: '',
       media: [],
@@ -105,15 +105,23 @@ export function CaseContentBlocks({
   };
 
   const getBlockPreview = (block: ContentBlock) => {
-    const hasContent = block.title.trim() || block.content.trim() || block.media.length > 0;
-    const previewText = block.title.trim() || block.content.trim().substring(0, 50) + '...' || 'Empty block';
-    
+    const title = block.title.trim();
+    const content = block.content.trim();
+    const hasContent = !!(title || content || block.media.length > 0);
+    const previewText = title
+      ? title
+      : content
+      ? content.length > 50
+        ? content.substring(0, 50) + '...'
+        : content
+      : 'Empty block';
+
     return (
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">
           <div className="flex items-center gap-1">
-            {block.title.trim() && <Type className="w-4 h-4 text-blue-600" />}
-            {block.content.trim() && <FileText className="w-4 h-4 text-green-600" />}
+            {title && <Type className="w-4 h-4 text-blue-600" />}
+            {content && <FileText className="w-4 h-4 text-green-600" />}
             {block.media.length > 0 && <Image className="w-4 h-4 text-purple-600" />}
           </div>
           <span className={`font-['Anonymous_Pro'] text-sm truncate ${
