@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
 import { CaseContentBlocks, type ContentBlock, type MediaItem } from './CaseContentBlocks';
 import { Plus, Edit2, Trash2, Save, X, FileText, Layout } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ProjectFormData {
   name: string;

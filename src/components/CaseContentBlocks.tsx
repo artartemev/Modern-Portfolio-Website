@@ -6,7 +6,7 @@ import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { MediaUploader } from './MediaUploader';
 import { Plus, Trash2, MoveUp, MoveDown, Type, FileText, Image } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export interface MediaItem {
   id: string;
