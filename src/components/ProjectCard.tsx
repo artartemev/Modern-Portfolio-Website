@@ -54,11 +54,17 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
   const safeYear = project.year || new Date().getFullYear();
   const safeCategories = Array.isArray(project.category) ? project.category : [project.category].filter(Boolean);
 
-  // Get category labels from constants
-  const categoryLabels = safeCategories.map(categoryId => {
-    const category = CATEGORIES.find(c => c.id === categoryId);
-    return category ? category.label : categoryId;
-  });
+  // Get unique category labels from constants
+  const categoryLabels = Array.from(
+    new Set(
+      safeCategories.map((categoryId) => {
+        const category = CATEGORIES.find((c) => c.id === categoryId);
+        return category ? category.label : categoryId;
+      }),
+    ),
+  );
+  // Ensure tags are unique
+  const uniqueTags = Array.from(new Set(safeTags));
 
   return (
     <motion.div
@@ -145,9 +151,9 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           {/* Categories - Show all categories */}
           {categoryLabels.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {categoryLabels.map((label, index) => (
+              {categoryLabels.map((label) => (
                 <Badge
-                  key={index}
+                  key={label}
                   className="bg-blue-100/20 backdrop-blur-sm text-blue-600 border-blue-400/30 text-xs font-['Anonymous_Pro'] uppercase tracking-wide px-2 py-1"
                 >
                   {label}
@@ -158,21 +164,21 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5">
-            {safeTags.slice(0, 3).map((tag, index) => (
+            {uniqueTags.slice(0, 3).map((tag) => (
               <Badge
-                key={index}
+                key={tag}
                 variant="outline"
                 className="bg-white/5 border-white/20 text-[#323232]/70 text-xs font-['Anonymous_Pro'] uppercase tracking-wide px-2 py-1"
               >
                 {tag}
               </Badge>
             ))}
-            {safeTags.length > 3 && (
+            {uniqueTags.length > 3 && (
               <Badge
                 variant="outline"
                 className="bg-white/5 border-white/20 text-[#323232]/70 text-xs font-['Anonymous_Pro'] uppercase tracking-wide px-2 py-1"
               >
-                +{safeTags.length - 3}
+                +{uniqueTags.length - 3}
               </Badge>
             )}
           </div>
