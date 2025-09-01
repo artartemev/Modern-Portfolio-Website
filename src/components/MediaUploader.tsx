@@ -186,7 +186,7 @@ export function MediaUploader({
             onChange={(e) => setUrlInput(e.target.value)}
             placeholder="https://example.com/image.jpg or https://giphy.com/gifs/..."
             className="font-['Anonymous_Pro']"
-            onKeyPress={(e) => e.key === 'Enter' && handleUrlAdd()}
+            onKeyDown={e => e.key === 'Enter' && handleUrlAdd()}
           />
           <Button
             type="button"
