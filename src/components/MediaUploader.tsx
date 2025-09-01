@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -30,6 +30,14 @@ export function MediaUploader({
 }: MediaUploaderProps) {
   const [urlInput, setUrlInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const objectUrlMap = useRef(new Map<string, string>());
+
+  useEffect(() => {
+    return () => {
+      objectUrlMap.current.forEach(url => URL.revokeObjectURL(url));
+      objectUrlMap.current.clear();
+    };
+  }, []);
 
   const getMediaType = (url: string): 'image' | 'gif' | 'video' => {
     const lowerUrl = url.toLowerCase();
@@ -87,12 +95,14 @@ export function MediaUploader({
         }
 
         // Create object URL for preview (in real app, would be Supabase Storage URL)
+        const id = Date.now().toString() + i;
         const objectUrl = URL.createObjectURL(file);
-        
+        objectUrlMap.current.set(id, objectUrl);
+
         const mediaItem: MediaItem = {
-          id: Date.now().toString() + i,
+          id,
           url: objectUrl,
-          type: file.type === 'image/gif' ? 'gif' : 
+          type: file.type === 'image/gif' ? 'gif' :
                 file.type.startsWith('video/') ? 'video' : 'image',
           name: file.name
         };
@@ -119,6 +129,11 @@ export function MediaUploader({
   };
 
   const handleRemove = (id: string) => {
+    const objectUrl = objectUrlMap.current.get(id);
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrlMap.current.delete(id);
+    }
     const updatedMedia = media.filter(item => item.id !== id);
     onMediaChange(updatedMedia);
     toast.success('Media removed');
