@@ -108,6 +108,7 @@
     --color-blue-400: oklch(.707 .165 254.624);
     --color-blue-500: oklch(.623 .214 259.815);
     --color-blue-600: oklch(.546 .245 262.881);
+    --color-blue-700: oklch(.488 .243 264.376);
     --color-purple-200: oklch(.902 .063 306.703);
     --color-purple-300: oklch(.827 .119 306.383);
     --color-purple-500: oklch(.627 .265 303.9);
@@ -1575,7 +1576,7 @@
     flex: 1;
   }
 
-  .shrink-0 {
+  .flex-shrink-0, .shrink-0 {
     flex-shrink: 0;
   }
 
@@ -3044,6 +3045,10 @@
     font-family: Anonymous Pro\:Regular, sans-serif;
   }
 
+  .font-\[\'Feature_Mono\'\] {
+    font-family: Feature Mono;
+  }
+
   .font-\[\'Inter\'\] {
     font-family: Inter;
   }
@@ -3261,6 +3266,10 @@
 
   .break-words {
     overflow-wrap: break-word;
+  }
+
+  .break-all {
+    word-break: break-all;
   }
 
   .whitespace-nowrap {
@@ -3492,6 +3501,26 @@
   .tabular-nums {
     --tw-numeric-spacing: tabular-nums;
     font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
+  }
+
+  .underline {
+    text-decoration-line: underline;
+  }
+
+  .decoration-blue-300\/50 {
+    -webkit-text-decoration-color: color-mix(in srgb, oklch(.809 .105 251.813) 50%, transparent);
+    text-decoration-color: color-mix(in srgb, oklch(.809 .105 251.813) 50%, transparent);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .decoration-blue-300\/50 {
+      -webkit-text-decoration-color: color-mix(in oklab, var(--color-blue-300) 50%, transparent);
+      text-decoration-color: color-mix(in oklab, var(--color-blue-300) 50%, transparent);
+    }
+  }
+
+  .underline-offset-2 {
+    text-underline-offset: 2px;
   }
 
   .underline-offset-4 {
@@ -4329,6 +4358,18 @@
   }
 
   @media (hover: hover) {
+    .hover\:text-blue-200:hover {
+      color: var(--color-blue-200);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:text-blue-700:hover {
+      color: var(--color-blue-700);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:text-foreground:hover {
       color: var(--foreground);
     }
@@ -4367,6 +4408,13 @@
   @media (hover: hover) {
     .hover\:underline:hover {
       text-decoration-line: underline;
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:decoration-blue-200:hover {
+      -webkit-text-decoration-color: var(--color-blue-200);
+      text-decoration-color: var(--color-blue-200);
     }
   }
 

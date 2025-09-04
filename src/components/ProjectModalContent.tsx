@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Target, Lightbulb, Wrench, TrendingUp, FileText, Image, ArrowRight } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { LinkifiedText } from './LinkifiedText';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import type { Project, ContentBlock, MediaItem } from '../utils/projectModalConstants';
 
@@ -100,9 +101,9 @@ export function ProjectModalContent({
         
         {hasContent && (
           <div className="mb-8">
-            <p className="text-white/80 text-lg leading-relaxed whitespace-pre-line">
+            <LinkifiedText className="text-white/80 text-lg leading-relaxed whitespace-pre-line block">
               {block.content}
-            </p>
+            </LinkifiedText>
           </div>
         )}
         
@@ -153,9 +154,9 @@ export function ProjectModalContent({
                 Project Overview
               </h2>
             </div>
-            <p className="text-white/80 text-lg leading-relaxed">
+            <LinkifiedText className="text-white/80 text-lg leading-relaxed block">
               {project.overview || safeDescription}
-            </p>
+            </LinkifiedText>
           </motion.section>
 
           {/* Challenge Section */}
@@ -174,9 +175,9 @@ export function ProjectModalContent({
                   The Challenge
                 </h2>
               </div>
-              <p className="text-white/80 text-lg leading-relaxed">
+              <LinkifiedText className="text-white/80 text-lg leading-relaxed block">
                 {project.challenge}
-              </p>
+              </LinkifiedText>
             </motion.section>
           )}
 
@@ -196,9 +197,9 @@ export function ProjectModalContent({
                   The Solution
                 </h2>
               </div>
-              <p className="text-white/80 text-lg leading-relaxed">
+              <LinkifiedText className="text-white/80 text-lg leading-relaxed block">
                 {project.solution}
-              </p>
+              </LinkifiedText>
             </motion.section>
           )}
 
@@ -218,9 +219,9 @@ export function ProjectModalContent({
                   Results & Impact
                 </h2>
               </div>
-              <p className="text-white/80 text-lg leading-relaxed">
+              <LinkifiedText className="text-white/80 text-lg leading-relaxed block">
                 {project.results}
-              </p>
+              </LinkifiedText>
             </motion.section>
           )}
         </>

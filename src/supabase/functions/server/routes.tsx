@@ -1,4 +1,4 @@
-import { Context } from 'hono';
+import { Context } from 'npm:hono';
 import * as kv from './kv_store.tsx';
 import { Project, SAMPLE_PROJECTS, ContentBlock, MediaItem } from './constants.tsx';
 

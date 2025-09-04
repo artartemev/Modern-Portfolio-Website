@@ -64,7 +64,7 @@ export function Hero() {
           >
             <div className="space-y-4">
               <motion.h1
-                className="font-['Inter'] tracking-[0.2em] uppercase text-[#323232]"
+                className="font-['Feature_Mono'] tracking-[0.2em] uppercase text-[#323232]"
                 style={{ fontSize: 'clamp(4rem, 8vw, 10rem)', fontWeight: 'bold', lineHeight: '0.9' }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -98,7 +98,7 @@ export function Hero() {
                 <div className="absolute -inset-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10" />
                 <div className="relative p-6 space-y-2">
                   <p className="font-['Anonymous_Pro'] text-[#323232] leading-relaxed uppercase tracking-wide opacity-90">
-                    <span className="text-[#666]">Skills:</span> Graphic and web design • Zero-code services • AI (midjourney, chatgpt) • Project management • Event organization
+                    <span className="text-[#666]">Skills:</span> Graphic and web design • Vibe coding • Zero-code services • AI image/video generation • Project management • Event organization
                   </p>
                   <p className="font-['Anonymous_Pro'] text-[#323232] leading-relaxed uppercase tracking-wide opacity-90">
                     <span className="text-[#666]">Expertise:</span> Client communication • Business process optimization • Visual concept creation • Social media promotion
@@ -118,9 +118,14 @@ export function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-r from-[#323232] to-[#555] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </button>
               
-              <button className="group relative px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-[#323232] font-['Anonymous_Pro'] uppercase tracking-wider rounded-xl transition-all duration-300 hover:scale-105 hover:bg-white/20">
+              <a 
+                href="https://t.me/artartemev" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group relative px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-[#323232] font-['Anonymous_Pro'] uppercase tracking-wider rounded-xl transition-all duration-300 hover:scale-105 hover:bg-white/20 inline-block"
+              >
                 Contact Me
-              </button>
+              </a>
             </motion.div>
           </motion.div>
         </div>

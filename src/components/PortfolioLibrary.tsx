@@ -49,9 +49,9 @@ export function PortfolioLibrary() {
         } else {
           throw new Error('No projects returned from API');
         }
-      } catch (err: unknown) {
+      } catch (err) {
         console.error('API failed, using fallback data:', err);
-
+        
         // Immediately use fallback data when API fails
         try {
           console.log('Loading fallback data...');
@@ -82,10 +82,9 @@ export function PortfolioLibrary() {
           } else {
             throw new Error('Fallback data validation failed');
           }
-        } catch (fallbackError: unknown) {
+        } catch (fallbackError) {
           console.error('Fallback data also failed:', fallbackError);
-          const message = fallbackError instanceof Error ? fallbackError.message : 'Unknown error';
-          setError(`Unable to load project data: ${message}`);
+          setError(`Unable to load project data: ${err.message}`);
           setProjects([]);
           setAvailableTags([]);
         }
@@ -137,7 +136,7 @@ export function PortfolioLibrary() {
         }
         
         return true;
-      } catch (filterError: unknown) {
+      } catch (filterError) {
         console.error('Error filtering project:', project, filterError);
         return false;
       }
@@ -209,7 +208,7 @@ export function PortfolioLibrary() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-['Inter'] text-6xl md:text-7xl text-[#323232] uppercase tracking-[0.3em] mb-4">
+          <h2 className="font-['Feature_Mono'] text-6xl md:text-7xl text-[#323232] uppercase tracking-[0.3em] mb-4">
             Portfolio
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#323232] to-transparent mx-auto mb-6" />

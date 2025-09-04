@@ -10,7 +10,7 @@ CREATE TABLE kv_store_32d29310 (
 CREATE INDEX IF NOT EXISTS idx_kv_store_32d29310_key ON kv_store_32d29310(key);
 */
 
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "jsr:@supabase/supabase-js@2.49.8";
 
 const client = () => createClient(
   Deno.env.get("SUPABASE_URL"),

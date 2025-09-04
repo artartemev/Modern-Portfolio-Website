@@ -25,11 +25,10 @@ export function ApiDebug() {
           fallbackMode: healthResult.fallbackMode,
           message: healthResult.message
         };
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        info.healthCheck = {
-          success: false,
-          error: message,
+      } catch (error) {
+        info.healthCheck = { 
+          success: false, 
+          error: error.message,
           fallbackMode: true
         };
       }
@@ -39,9 +38,8 @@ export function ApiDebug() {
         console.log('Testing projects fetch...');
         const projects = await projectApi.getProjects();
         info.projects = { count: projects.length, success: true };
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        info.projects = { success: false, error: message };
+      } catch (error) {
+        info.projects = { success: false, error: error.message };
       }
 
       try {
@@ -49,9 +47,8 @@ export function ApiDebug() {
         console.log('Testing tags fetch...');
         const tags = await projectApi.getTags();
         info.tags = { count: tags.length, success: true };
-      } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        info.tags = { success: false, error: message };
+      } catch (error) {
+        info.tags = { success: false, error: error.message };
       }
 
       setDebugInfo(info);

@@ -53,7 +53,7 @@ export function ProjectModalHero({
             )}
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-['Anonymous_Pro'] text-white mb-6 uppercase tracking-wider leading-tight">
+          <h1 className="text-5xl md:text-6xl font-['Feature_Mono'] text-white mb-6 uppercase tracking-wider leading-tight">
             {safeTitle}
           </h1>
           

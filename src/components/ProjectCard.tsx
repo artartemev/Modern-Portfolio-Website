@@ -3,6 +3,7 @@ import { Card, CardContent } from './ui/card';
 import { ExternalLink, Github, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { LinkifiedText } from './LinkifiedText';
 import { CATEGORIES } from '../utils/constants';
 
 interface Project {
@@ -132,9 +133,13 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
               <h3 className="font-['Anonymous_Pro'] text-lg text-[#323232] uppercase tracking-wider mb-2 group-hover:text-[#323232]/80 transition-colors">
                 {safeTitle}
               </h3>
-              <p className="text-[#323232]/60 text-sm line-clamp-2 leading-relaxed">
+              <LinkifiedText 
+                className="text-[#323232]/60 text-sm line-clamp-2 leading-relaxed block"
+                linkClassName="text-blue-600 hover:text-blue-700"
+                showExternalIcon={false}
+              >
                 {safeDescription}
-              </p>
+              </LinkifiedText>
             </div>
             <div className="flex items-center gap-1 text-[#323232]/40 text-xs font-['Anonymous_Pro'] uppercase tracking-wider">
               <Calendar className="w-3 h-3" />

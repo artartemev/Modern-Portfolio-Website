@@ -125,6 +125,7 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   console.log(`Making API call to: ${url}`);
   console.log(`Project ID: ${projectId}`);
+  console.log(`Public Anon Key: ${publicAnonKey}`);
   
   try {
     const response = await fetch(url, {
@@ -167,21 +168,19 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     }
     
     return result;
-  } catch (error: unknown) {
+  } catch (error) {
     console.error(`API Call failed for ${url}:`, error);
-
-    if (
-      error instanceof Error &&
-      (error.message.includes('fetch') ||
-        error.message.includes('network') ||
-        error.message.includes('NetworkError') ||
-        error.message.includes('Failed to fetch'))
-    ) {
+    
+    // Check for network connectivity issues
+    if (error.message?.includes('fetch') || 
+        error.message?.includes('network') ||
+        error.message?.includes('NetworkError') ||
+        error.message?.includes('Failed to fetch')) {
       console.error('Network connectivity issue detected');
       throw new Error('Network connectivity issue - please check your internet connection');
     }
-
-    throw error instanceof Error ? error : new Error('Unknown error');
+    
+    throw error;
   }
 };
 
@@ -233,11 +232,11 @@ export const projectApi = {
       
       console.log('Transformed projects:', transformedProjects);
       return transformedProjects;
-      } catch (error: unknown) {
-        console.error('Error fetching projects, using fallback data:', error);
-        console.log('Returning local fallback projects');
-        return FALLBACK_PROJECTS;
-      }
+    } catch (error) {
+      console.error('Error fetching projects, using fallback data:', error);
+      console.log('Returning local fallback projects');
+      return FALLBACK_PROJECTS;
+    }
   },
 
   // Get project by ID
@@ -245,10 +244,10 @@ export const projectApi = {
     try {
       const result = await apiCall(`/projects/${id}`);
       return transformApiProject(result.project);
-      } catch (error: unknown) {
-        console.error(`Error fetching project ${id}:`, error);
-        throw error instanceof Error ? error : new Error('Unknown error');
-      }
+    } catch (error) {
+      console.error(`Error fetching project ${id}:`, error);
+      throw error;
+    }
   },
 
   // Create new project - transform our interface back to API format
@@ -284,19 +283,18 @@ export const projectApi = {
         body: JSON.stringify(apiProject),
       });
       return transformApiProject(result.project);
-      } catch (error: unknown) {
-        console.error('Error creating project:', error);
-
-        if (error instanceof Error) {
-          if (error.message.includes('Database connectivity issue')) {
-            throw new Error('Cannot create project: Database is currently unavailable. Please try again later.');
-          } else if (error.message.includes('Network connectivity issue')) {
-            throw new Error('Cannot create project: Please check your internet connection and try again.');
-          }
-        }
-
-        throw error instanceof Error ? error : new Error('Unknown error');
+    } catch (error) {
+      console.error('Error creating project:', error);
+      
+      // Provide helpful error messages for common issues
+      if (error.message?.includes('Database connectivity issue')) {
+        throw new Error('Cannot create project: Database is currently unavailable. Please try again later.');
+      } else if (error.message?.includes('Network connectivity issue')) {
+        throw new Error('Cannot create project: Please check your internet connection and try again.');
       }
+      
+      throw error;
+    }
   },
 
   // Update project
@@ -331,19 +329,18 @@ export const projectApi = {
         body: JSON.stringify(apiUpdates),
       });
       return transformApiProject(result.project);
-      } catch (error: unknown) {
-        console.error(`Error updating project ${id}:`, error);
-
-        if (error instanceof Error) {
-          if (error.message.includes('Database connectivity issue')) {
-            throw new Error('Cannot update project: Database is currently unavailable. Please try again later.');
-          } else if (error.message.includes('Network connectivity issue')) {
-            throw new Error('Cannot update project: Please check your internet connection and try again.');
-          }
-        }
-
-        throw error instanceof Error ? error : new Error('Unknown error');
+    } catch (error) {
+      console.error(`Error updating project ${id}:`, error);
+      
+      // Provide helpful error messages for common issues
+      if (error.message?.includes('Database connectivity issue')) {
+        throw new Error('Cannot update project: Database is currently unavailable. Please try again later.');
+      } else if (error.message?.includes('Network connectivity issue')) {
+        throw new Error('Cannot update project: Please check your internet connection and try again.');
       }
+      
+      throw error;
+    }
   },
 
   // Delete project
@@ -352,10 +349,10 @@ export const projectApi = {
       await apiCall(`/projects/${id}`, {
         method: 'DELETE',
       });
-      } catch (error: unknown) {
-        console.error(`Error deleting project ${id}:`, error);
-        throw error instanceof Error ? error : new Error('Unknown error');
-      }
+    } catch (error) {
+      console.error(`Error deleting project ${id}:`, error);
+      throw error;
+    }
   },
 
   // Get available tags
@@ -363,10 +360,10 @@ export const projectApi = {
     try {
       const result = await apiCall('/tags');
       return result.tags || [];
-      } catch (error: unknown) {
-        console.error('Error fetching tags:', error);
-        throw error instanceof Error ? error : new Error('Unknown error');
-      }
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+      throw error;
+    }
   },
 
   // Health check
@@ -378,13 +375,13 @@ export const projectApi = {
         fallbackMode: result.fallbackMode || false,
         message: result.message
       };
-      } catch (error: unknown) {
-        console.error('Health check failed:', error);
-        return {
-          success: false,
-          fallbackMode: true,
-          message: 'Health check failed, using fallback mode'
-        };
-      }
+    } catch (error) {
+      console.error('Health check failed:', error);
+      return {
+        success: false,
+        fallbackMode: true,
+        message: 'Health check failed, using fallback mode'
+      };
+    }
   },
 };
