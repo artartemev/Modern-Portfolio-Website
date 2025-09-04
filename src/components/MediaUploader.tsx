@@ -55,7 +55,7 @@ export function MediaUploader({
     }
 
     const newMedia: MediaItem = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       url: urlInput.trim(),
       type: getMediaType(urlInput),
       name: urlInput.split('/').pop()?.split('?')[0] || 'Media'
@@ -95,7 +95,7 @@ export function MediaUploader({
         }
 
         // Create object URL for preview (in real app, would be Supabase Storage URL)
-        const id = Date.now().toString() + i;
+        const id = crypto.randomUUID();
         const objectUrl = URL.createObjectURL(file);
         objectUrlMap.current.set(id, objectUrl);
 
