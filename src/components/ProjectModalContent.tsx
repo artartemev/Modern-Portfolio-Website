@@ -227,48 +227,7 @@ export function ProjectModalContent({
         </>
       )}
 
-      {/* Image Gallery - Only show if no content blocks or if content blocks don't have enough media */}
-      {galleryImages.length > 1 && safeContentBlocks.length === 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8"
-        >
-          <h2 className="text-3xl font-['Anonymous_Pro'] text-white mb-8 uppercase tracking-wider">
-            Project Gallery
-          </h2>
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3, 1200: 4 }}
-          >
-            <Masonry gutter="16px">
-              {galleryImages.map((image, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.7 + index * 0.1, duration: 0.4 }}
-                  className="cursor-pointer rounded-2xl overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/30 transition-all duration-300 group"
-                  onClick={() => onImageClick(image)}
-                >
-                  <div className="relative">
-                    <ImageWithFallback
-                      src={image}
-                      alt={`${safeTitle} gallery ${index + 1}`}
-                      className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-md rounded-full p-3">
-                        <ArrowRight className="w-6 h-6 text-white" />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </Masonry>
-          </ResponsiveMasonry>
-        </motion.section>
-      )}
+
     </>
   );
 }

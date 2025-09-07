@@ -5,15 +5,14 @@ import { Switch } from './ui/switch';
 import { Checkbox } from './ui/checkbox';
 import { Grid, List, Star, X } from 'lucide-react';
 import { motion } from 'motion/react';
-import { CATEGORIES, YEARS, THEMES } from '../utils/constants';
+import { CATEGORIES, YEARS } from '../utils/constants';
 
 interface FilterControlsProps {
   selectedCategories: string[];
   onCategoriesChange: (categories: string[]) => void;
   selectedYear: string;
   onYearChange: (year: string) => void;
-  selectedTheme: string;
-  onThemeChange: (theme: string) => void;
+
   selectedTags: string[];
   onTagToggle: (tag: string) => void;
   availableTags: string[];
@@ -28,8 +27,7 @@ export function FilterControls({
   onCategoriesChange,
   selectedYear,
   onYearChange,
-  selectedTheme,
-  onThemeChange,
+
   selectedTags,
   onTagToggle,
   availableTags,
@@ -170,26 +168,6 @@ export function FilterControls({
               className="font-['Anonymous_Pro'] uppercase tracking-wide text-xs"
             >
               {year}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <Separator className="bg-white/20" />
-
-      {/* Theme Filter */}
-      <div className="space-y-3">
-        <h3 className="font-['Anonymous_Pro'] text-sm text-[#323232] uppercase tracking-wider">Theme</h3>
-        <div className="flex flex-wrap gap-2">
-          {THEMES.map((theme) => (
-            <Button
-              key={theme.id}
-              variant={selectedTheme === theme.id ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onThemeChange(theme.id)}
-              className="font-['Anonymous_Pro'] uppercase tracking-wide text-xs"
-            >
-              {theme.label}
             </Button>
           ))}
         </div>

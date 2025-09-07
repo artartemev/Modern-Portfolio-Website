@@ -1,7 +1,47 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import imgRectangle1523 from "figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png";
+import { heroApi, type HeroData } from '../utils/api';
+
+const DEFAULT_HERO_DATA: HeroData = {
+  name: 'Artem',
+  title: 'Designer & Project Manager',
+  description: 'Seeking a position in design or project management where I can help you with project visualization, process optimization, and solving business problems. My goal is to work with a steady stream of orders and clients.',
+  skills: 'Graphic and web design • Vibe coding • Zero-code services • AI image/video generation • Project management • Event organization',
+  expertise: 'Client communication • Business process optimization • Visual concept creation • Social media promotion',
+  primaryButtonText: 'View Portfolio',
+  secondaryButtonText: 'Contact Me',
+  contactLink: 'https://t.me/artartemev',
+  image: 'figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png'
+};
 
 export function Hero() {
+  const [heroData, setHeroData] = useState<HeroData>(DEFAULT_HERO_DATA);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    loadHeroData();
+  }, []);
+
+  const loadHeroData = async () => {
+    try {
+      setIsLoading(true);
+      const data = await heroApi.getHeroData();
+      setHeroData(data);
+    } catch (error) {
+      console.error('Failed to load hero data:', error);
+      // Keep using default data
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const scrollToPortfolio = () => {
+    const portfolioSection = document.querySelector('[data-section="portfolio"]');
+    if (portfolioSection) {
+      portfolioSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background with glass effects */}
@@ -45,12 +85,10 @@ export function Hero() {
             className="relative"
           >
             <div className="relative">
-              {/* Glass morphism background */}
-              <div className="absolute -inset-4 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl" />
               <img
-                src={imgRectangle1523}
-                alt="Artem - Designer & Project Manager"
-                className="relative z-10 w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover aspect-[4/5]"
+                src={heroData.image.startsWith('figma:') ? imgRectangle1523 : heroData.image}
+                alt={`${heroData.name} - ${heroData.title}`}
+                className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover aspect-[4/5]"
               />
             </div>
           </motion.div>
@@ -70,7 +108,7 @@ export function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Artem
+                {heroData.name}
               </motion.h1>
               
               <motion.div
@@ -88,20 +126,17 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.8 }}
             >
               <p className="font-['Anonymous_Pro'] text-[#323232] text-xl leading-relaxed uppercase tracking-wider">
-                Seeking a position in design or project management where I can help
-                you with project visualization, process optimization, and solving
-                business problems. My goal is to work with a steady stream of orders
-                and clients.
+                {heroData.description}
               </p>
 
               <div className="relative">
                 <div className="absolute -inset-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10" />
                 <div className="relative p-6 space-y-2">
                   <p className="font-['Anonymous_Pro'] text-[#323232] leading-relaxed uppercase tracking-wide opacity-90">
-                    <span className="text-[#666]">Skills:</span> Graphic and web design • Vibe coding • Zero-code services • AI image/video generation • Project management • Event organization
+                    <span className="text-[#666]">Skills:</span> {heroData.skills}
                   </p>
                   <p className="font-['Anonymous_Pro'] text-[#323232] leading-relaxed uppercase tracking-wide opacity-90">
-                    <span className="text-[#666]">Expertise:</span> Client communication • Business process optimization • Visual concept creation • Social media promotion
+                    <span className="text-[#666]">Expertise:</span> {heroData.expertise}
                   </p>
                 </div>
               </div>
@@ -113,18 +148,21 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1 }}
             >
-              <button className="group relative px-8 py-4 bg-[#323232] text-white font-['Anonymous_Pro'] uppercase tracking-wider overflow-hidden rounded-xl transition-all duration-300 hover:scale-105">
-                <span className="relative z-10">View Portfolio</span>
+              <button 
+                onClick={scrollToPortfolio}
+                className="group relative px-8 py-4 bg-[#323232] text-white font-['Anonymous_Pro'] uppercase tracking-wider overflow-hidden rounded-xl transition-all duration-300 hover:scale-105"
+              >
+                <span className="relative z-10">{heroData.primaryButtonText}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#323232] to-[#555] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </button>
               
               <a 
-                href="https://t.me/artartemev" 
+                href={heroData.contactLink} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group relative px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-[#323232] font-['Anonymous_Pro'] uppercase tracking-wider rounded-xl transition-all duration-300 hover:scale-105 hover:bg-white/20 inline-block"
               >
-                Contact Me
+                {heroData.secondaryButtonText}
               </a>
             </motion.div>
           </motion.div>

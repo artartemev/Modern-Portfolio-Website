@@ -38,7 +38,7 @@ export function CaseContentBlocks({
 
   const addNewBlock = () => {
     const newBlock: ContentBlock = {
-      id: Date.now().toString(),
+      id: `block-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       title: '',
       content: '',
       media: [],
@@ -50,6 +50,7 @@ export function CaseContentBlocks({
   };
 
   const updateBlock = (id: string, updates: Partial<ContentBlock>) => {
+    console.log(`Updating block ${id}:`, updates);
     const updatedBlocks = blocks.map(block => 
       block.id === id ? { ...block, ...updates } : block
     );
@@ -220,7 +221,7 @@ export function CaseContentBlocks({
           
           return (
             <Card 
-              key={block.id} 
+              key={`content-block-${block.id}`} 
               className={`bg-white/10 backdrop-blur-md border-white/20 transition-all duration-200 ${
                 hasContent ? 'border-blue-200' : ''
               }`}
@@ -268,10 +269,12 @@ export function CaseContentBlocks({
                   {/* Block Media */}
                   <div>
                     <MediaUploader
+                      key={`media-uploader-${block.id}`}
                       media={block.media}
                       onMediaChange={(media) => updateBlock(block.id, { media })}
                       maxFiles={5}
                       acceptedTypes={['image/*', '.gif']}
+                      blockId={block.id}
                     />
                   </div>
 

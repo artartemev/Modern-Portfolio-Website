@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ProjectCard } from './ProjectCard';
+import { ProjectListView } from './ProjectListView';
 import { ProjectModal } from './ProjectModal';
 import { FilterControls } from './FilterControls';
 import { LoadingState, ErrorState, EmptyState } from './LoadingState';
@@ -10,7 +11,7 @@ import { FALLBACK_PROJECTS, FALLBACK_TAGS } from '../utils/constants';
 export function PortfolioLibrary() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState('All');
-  const [selectedTheme, setSelectedTheme] = useState('All');
+
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showTopOnly, setShowTopOnly] = useState(false);
   const [view, setView] = useState<'grid' | 'list'>('grid');
@@ -123,8 +124,7 @@ export function PortfolioLibrary() {
           if (isNaN(projectYear) || isNaN(filterYear) || projectYear !== filterYear) return false;
         }
         
-        // Theme filter
-        if (selectedTheme !== 'All' && project.theme !== selectedTheme) return false;
+
         
         // Top filter
         if (showTopOnly && !project.is_top) return false;
@@ -141,7 +141,7 @@ export function PortfolioLibrary() {
         return false;
       }
     });
-  }, [projects, selectedCategories, selectedYear, selectedTheme, selectedTags, showTopOnly]);
+  }, [projects, selectedCategories, selectedYear, selectedTags, showTopOnly]);
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags(prev => 
@@ -166,7 +166,7 @@ export function PortfolioLibrary() {
   };
 
   return (
-    <section className="min-h-screen py-20 relative overflow-hidden">
+    <section data-section="portfolio" className="min-h-screen py-20 relative overflow-hidden">
       {/* Background with glass effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#fffded] via-[#f8f6e8] to-[#f0ede1]" />
       
@@ -238,8 +238,7 @@ export function PortfolioLibrary() {
               onCategoriesChange={setSelectedCategories}
               selectedYear={selectedYear}
               onYearChange={setSelectedYear}
-              selectedTheme={selectedTheme}
-              onThemeChange={setSelectedTheme}
+
               selectedTags={selectedTags}
               onTagToggle={handleTagToggle}
               availableTags={availableTags}
@@ -276,20 +275,16 @@ export function PortfolioLibrary() {
             {/* Projects Display */}
             {!loading && projects.length > 0 && (
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${selectedCategories.join(',')}-${selectedYear}-${selectedTheme}-${selectedTags.join(',')}-${showTopOnly}-${view}`}
-                  className={view === 'grid' 
-                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" 
-                    : "space-y-4"
-                  }
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5, staggerChildren: 0.1 }}
-                >
-                  {filteredProjects.map((project, index) => {
-                    // Projects should be valid now thanks to API transformation
-                    return (
+                {view === 'grid' ? (
+                  <motion.div
+                    key={`grid-${selectedCategories.join(',')}-${selectedYear}-${selectedTags.join(',')}-${showTopOnly}`}
+                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5, staggerChildren: 0.1 }}
+                  >
+                    {filteredProjects.map((project, index) => (
                       <motion.div
                         key={project.id}
                         initial={{ opacity: 0, y: 20 }}
@@ -298,9 +293,22 @@ export function PortfolioLibrary() {
                       >
                         <ProjectCard project={project} onClick={handleProjectClick} />
                       </motion.div>
-                    );
-                  })}
-                </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`list-${selectedCategories.join(',')}-${selectedYear}-${selectedTags.join(',')}-${showTopOnly}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <ProjectListView 
+                      projects={filteredProjects} 
+                      onProjectClick={handleProjectClick} 
+                    />
+                  </motion.div>
+                )}
               </AnimatePresence>
             )}
 

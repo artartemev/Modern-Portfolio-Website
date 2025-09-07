@@ -13,17 +13,19 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
 import { CaseContentBlocks, type ContentBlock, type MediaItem } from './CaseContentBlocks';
+import { CoverImageUploader } from './CoverImageUploader';
+import { TagInput } from './TagInput';
+import { CategorySelector } from './CategorySelector';
 import { Plus, Edit2, Trash2, Save, X, FileText, Layout } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
 
 interface ProjectFormData {
   name: string;
   year: string;
-  category: 'web' | 'apps' | 'identity' | 'management' | 'other';
+  category: ('web' | 'apps' | 'identity' | 'management' | 'other')[];
   tags: string[];
   description: string;
   status: 'good' | 'norm' | 'miss';
-  theme: string;
   isTop: boolean;
   image: string;
   link: string;
@@ -40,11 +42,10 @@ interface ProjectFormData {
 const initialFormData: ProjectFormData = {
   name: '',
   year: new Date().getFullYear().toString(),
-  category: 'web',
+  category: [],
   tags: [],
   description: '',
   status: 'norm',
-  theme: 'Minimalist',
   isTop: false,
   image: '',
   link: '',
@@ -62,22 +63,30 @@ export function ProjectAdmin() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formData, setFormData] = useState<ProjectFormData>(initialFormData);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [tagInput, setTagInput] = useState('');
-  const [techInput, setTechInput] = useState('');
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [availableTechnologies, setAvailableTechnologies] = useState<string[]>([]);
 
-  // Load projects
+  // Load projects and tags
   useEffect(() => {
-    loadProjects();
+    loadData();
   }, []);
 
-  const loadProjects = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      const projectsData = await projectApi.getProjects();
+      const [projectsData, tagsData] = await Promise.all([
+        projectApi.getProjects(),
+        projectApi.getTags()
+      ]);
       setProjects(projectsData);
+      setAvailableTags(tagsData);
+      
+      // Extract unique technologies from all projects
+      const allTechs = projectsData.flatMap(p => p.technologies || []);
+      setAvailableTechnologies([...new Set(allTechs)]);
     } catch (error) {
-      console.error('Error loading projects:', error);
-      toast.error('Failed to load projects');
+      console.error('Error loading data:', error);
+      toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
@@ -94,11 +103,10 @@ export function ProjectAdmin() {
         const updateData: Partial<Project> = {
           title: formData.name,
           description: formData.description,
-          category: [formData.category], // Convert to array
+          category: formData.category,
           year: parseInt(formData.year),
           tags: formData.tags,
-          theme: formData.theme.toLowerCase().includes('light') || formData.theme.toLowerCase().includes('minimalist') ? 'light' : 
-                formData.theme.toLowerCase().includes('dark') ? 'dark' : 'mixed',
+          theme: 'mixed', // Default theme since we removed theme selection
           is_top: formData.isTop,
           image_url: formData.image || undefined,
           link: formData.link || undefined,
@@ -117,11 +125,10 @@ export function ProjectAdmin() {
         const projectData: Omit<Project, 'id' | 'created_at' | 'updated_at'> = {
           title: formData.name,
           description: formData.description,
-          category: [formData.category], // Convert to array
+          category: formData.category,
           year: parseInt(formData.year),
           tags: formData.tags,
-          theme: formData.theme.toLowerCase().includes('light') || formData.theme.toLowerCase().includes('minimalist') ? 'light' : 
-                formData.theme.toLowerCase().includes('dark') ? 'dark' : 'mixed',
+          theme: 'mixed', // Default theme since we removed theme selection
           is_top: formData.isTop,
           image_url: formData.image || undefined,
           link: formData.link || undefined,
@@ -137,7 +144,7 @@ export function ProjectAdmin() {
         toast.success('Project created successfully');
       }
       
-      await loadProjects();
+      await loadData();
       handleCloseDialog();
     } catch (error) {
       console.error('Error saving project:', error);
@@ -151,7 +158,7 @@ export function ProjectAdmin() {
     try {
       await projectApi.deleteProject(id);
       toast.success('Project deleted successfully');
-      await loadProjects();
+      await loadData();
     } catch (error) {
       console.error('Error deleting project:', error);
       toast.error('Failed to delete project');
@@ -163,11 +170,10 @@ export function ProjectAdmin() {
     setFormData({
       name: project.title,
       year: project.year.toString(),
-      category: Array.isArray(project.category) ? project.category[0] : project.category,
+      category: Array.isArray(project.category) ? project.category : [project.category],
       tags: project.tags,
       description: project.description,
       status: 'norm', // Default status as API doesn't have this field
-      theme: project.theme || 'Corporate',
       isTop: project.is_top,
       image: project.image_url || '',
       link: project.link || '',
@@ -193,50 +199,9 @@ export function ProjectAdmin() {
     setIsDialogOpen(false);
     setEditingProject(null);
     setFormData(initialFormData);
-    setTagInput('');
-    setTechInput('');
   };
 
-  const handleAddTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData({
-        ...formData,
-        tags: [...formData.tags, tagInput.trim()]
-      });
-      setTagInput('');
-    }
-  };
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setFormData({
-      ...formData,
-      tags: formData.tags.filter(tag => tag !== tagToRemove)
-    });
-  };
-
-  const handleAddTech = () => {
-    if (techInput.trim() && !formData.technologies.includes(techInput.trim())) {
-      setFormData({
-        ...formData,
-        technologies: [...formData.technologies, techInput.trim()]
-      });
-      setTechInput('');
-    }
-  };
-
-  const handleRemoveTech = (techToRemove: string) => {
-    setFormData({
-      ...formData,
-      technologies: formData.technologies.filter(tech => tech !== techToRemove)
-    });
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent, action: () => void) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      action();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fffded] via-[#f8f6e8] to-[#f0ede1] py-20">
@@ -259,7 +224,7 @@ export function ProjectAdmin() {
             
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-md">
               <DialogHeader>
-                <DialogTitle className="font-['Anonymous_Pro'] text-2xl text-[#323232] uppercase tracking-wider">
+                <DialogTitle className="font-['Feature_Mono'] text-2xl text-[#323232] uppercase tracking-wider">
                   {editingProject ? 'Edit Project' : 'Add New Project'}
                 </DialogTitle>
                 <DialogDescription className="font-['Anonymous_Pro'] text-[#323232]/70 uppercase tracking-wide text-sm">
@@ -312,42 +277,14 @@ export function ProjectAdmin() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="category" className="font-['Anonymous_Pro'] uppercase tracking-wide">
-                          Category
-                        </Label>
-                        <Select value={formData.category} onValueChange={(value: any) => setFormData({ ...formData, category: value })}>
-                          <SelectTrigger className="font-['Anonymous_Pro']">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="web">Web</SelectItem>
-                            <SelectItem value="apps">Apps</SelectItem>
-                            <SelectItem value="identity">Identity</SelectItem>
-                            <SelectItem value="management">Management</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div>
-                        <Label htmlFor="theme" className="font-['Anonymous_Pro'] uppercase tracking-wide">
-                          Theme
-                        </Label>
-                        <Select value={formData.theme} onValueChange={(value) => setFormData({ ...formData, theme: value })}>
-                          <SelectTrigger className="font-['Anonymous_Pro']">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Minimalist">Minimalist</SelectItem>
-                            <SelectItem value="Corporate">Corporate</SelectItem>
-                            <SelectItem value="Creative">Creative</SelectItem>
-                            <SelectItem value="E-commerce">E-commerce</SelectItem>
-                            <SelectItem value="Portfolio">Portfolio</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div>
+                      <Label className="font-['Anonymous_Pro'] uppercase tracking-wide">
+                        Categories
+                      </Label>
+                      <CategorySelector
+                        selectedCategories={formData.category}
+                        onChange={(categories) => setFormData({ ...formData, category: categories })}
+                      />
                     </div>
 
                     <div>
@@ -425,46 +362,20 @@ export function ProjectAdmin() {
                       <Label className="font-['Anonymous_Pro'] uppercase tracking-wide">
                         Technologies Used
                       </Label>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {formData.technologies.map((tech) => (
-                          <Badge
-                            key={tech}
-                            variant="outline"
-                            className="font-['Anonymous_Pro'] cursor-pointer"
-                            onClick={() => handleRemoveTech(tech)}
-                          >
-                            {tech} <X className="w-3 h-3 ml-1" />
-                          </Badge>
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <Input
-                          value={techInput}
-                          onChange={(e) => setTechInput(e.target.value)}
-                          onKeyPress={(e) => handleKeyPress(e, handleAddTech)}
-                          placeholder="Add technology and press Enter"
-                          className="font-['Anonymous_Pro']"
-                        />
-                        <Button type="button" onClick={handleAddTech} variant="outline">
-                          Add
-                        </Button>
-                      </div>
+                      <TagInput
+                        tags={formData.technologies}
+                        availableTags={availableTechnologies}
+                        onChange={(technologies) => setFormData({ ...formData, technologies })}
+                        placeholder="Type to search or create technologies..."
+                      />
                     </div>
 
                     <Separator />
 
-                    <div>
-                      <Label htmlFor="image" className="font-['Anonymous_Pro'] uppercase tracking-wide">
-                        Cover Image URL
-                      </Label>
-                      <Input
-                        id="image"
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        className="font-['Anonymous_Pro']"
-                        placeholder="https://example.com/image.jpg"
-                      />
-                    </div>
+                    <CoverImageUploader
+                      value={formData.image}
+                      onChange={(image) => setFormData({ ...formData, image })}
+                    />
 
                     <div>
                       <Label htmlFor="link" className="font-['Anonymous_Pro'] uppercase tracking-wide">
@@ -483,30 +394,12 @@ export function ProjectAdmin() {
                       <Label className="font-['Anonymous_Pro'] uppercase tracking-wide">
                         Tags
                       </Label>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {formData.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            className="font-['Anonymous_Pro'] cursor-pointer"
-                            onClick={() => handleRemoveTag(tag)}
-                          >
-                            {tag} <X className="w-3 h-3 ml-1" />
-                          </Badge>
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <Input
-                          value={tagInput}
-                          onChange={(e) => setTagInput(e.target.value)}
-                          onKeyPress={(e) => handleKeyPress(e, handleAddTag)}
-                          placeholder="Add tag and press Enter"
-                          className="font-['Anonymous_Pro']"
-                        />
-                        <Button type="button" onClick={handleAddTag} variant="outline">
-                          Add
-                        </Button>
-                      </div>
+                      <TagInput
+                        tags={formData.tags}
+                        availableTags={availableTags}
+                        onChange={(tags) => setFormData({ ...formData, tags })}
+                        placeholder="Type to search or create tags..."
+                      />
                     </div>
 
                     <div className="flex items-center space-x-2">

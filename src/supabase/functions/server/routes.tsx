@@ -360,6 +360,102 @@ export const getTags = async (c: Context) => {
   }
 };
 
+// Hero Management Routes
+
+// Default hero data
+const DEFAULT_HERO_DATA = {
+  name: 'Artem',
+  title: 'Designer & Project Manager',
+  description: 'Seeking a position in design or project management where I can help you with project visualization, process optimization, and solving business problems. My goal is to work with a steady stream of orders and clients.',
+  skills: 'Graphic and web design • Vibe coding • Zero-code services • AI image/video generation • Project management • Event organization',
+  expertise: 'Client communication • Business process optimization • Visual concept creation • Social media promotion',
+  primaryButtonText: 'View Portfolio',
+  secondaryButtonText: 'Contact Me',
+  contactLink: 'https://t.me/artartemev',
+  image: 'figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png'
+};
+
+// Get hero data
+export const getHeroData = async (c: Context) => {
+  try {
+    console.log('Fetching hero data...');
+    
+    const heroData = await kv.get('hero:data');
+    
+    if (!heroData) {
+      console.log('No hero data found, returning default data');
+      return c.json({
+        success: true,
+        hero: DEFAULT_HERO_DATA,
+        message: 'Using default hero data',
+        fallbackMode: true
+      });
+    }
+    
+    return c.json({
+      success: true,
+      hero: heroData
+    });
+  } catch (error) {
+    console.log('Database error during getHeroData:', error.message);
+    
+    return c.json({
+      success: true,
+      hero: DEFAULT_HERO_DATA,
+      fallbackMode: true,
+      message: 'Using default hero data due to database error'
+    });
+  }
+};
+
+// Update hero data
+export const updateHeroData = async (c: Context) => {
+  try {
+    const heroData = await c.req.json();
+    console.log('Updating hero data:', heroData);
+    
+    // Validate required fields
+    if (!heroData.name) {
+      return c.json({
+        success: false,
+        error: 'Validation error',
+        message: 'Name is required'
+      }, 400);
+    }
+    
+    const updatedHero = {
+      ...DEFAULT_HERO_DATA,
+      ...heroData,
+      updatedAt: new Date().toISOString()
+    };
+    
+    await kv.set('hero:data', updatedHero);
+    
+    console.log('Hero data updated successfully');
+    
+    return c.json({
+      success: true,
+      hero: updatedHero,
+      message: 'Hero data updated successfully'
+    });
+  } catch (error) {
+    // Special handling for SSL/connection errors
+    if (error.message?.includes('SSL handshake failed') || 
+        error.message?.includes('Database connection unavailable')) {
+      console.log('Cannot update hero data due to database connectivity issues');
+      return c.json({
+        success: false,
+        error: 'Database connectivity issue',
+        message: 'Cannot update hero data when database is unavailable. Please try again later or check database connectivity.',
+        fallbackMode: true,
+        canRetry: true
+      }, 503);
+    }
+    
+    return handleDatabaseError(error, 'update hero data', c);
+  }
+};
+
 // Health check
 export const healthCheck = async (c: Context) => {
   try {

@@ -385,3 +385,51 @@ export const projectApi = {
     }
   },
 };
+
+// Hero API interface
+export interface HeroData {
+  name: string;
+  title: string;
+  description: string;
+  skills: string;
+  expertise: string;
+  primaryButtonText: string;
+  secondaryButtonText: string;
+  contactLink: string;
+  image: string;
+}
+
+export const heroApi = {
+  // Get hero data
+  async getHeroData(): Promise<HeroData> {
+    try {
+      const result = await apiCall('/hero');
+      return result.hero;
+    } catch (error) {
+      console.error('Error fetching hero data:', error);
+      throw error;
+    }
+  },
+
+  // Update hero data
+  async updateHeroData(heroData: HeroData): Promise<HeroData> {
+    try {
+      const result = await apiCall('/hero', {
+        method: 'PUT',
+        body: JSON.stringify(heroData),
+      });
+      return result.hero;
+    } catch (error) {
+      console.error('Error updating hero data:', error);
+      
+      // Provide helpful error messages for common issues
+      if (error.message?.includes('Database connectivity issue')) {
+        throw new Error('Cannot update hero data: Database is currently unavailable. Please try again later.');
+      } else if (error.message?.includes('Network connectivity issue')) {
+        throw new Error('Cannot update hero data: Please check your internet connection and try again.');
+      }
+      
+      throw error;
+    }
+  },
+};

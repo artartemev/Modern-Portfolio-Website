@@ -11,7 +11,7 @@ import { getSafeProjectData, getCategoryLabels, getProjectImage, getGalleryImage
 import type { ProjectModalProps } from '../utils/projectModalConstants';
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(-1);
 
   if (!project) return null;
 
@@ -31,11 +31,28 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   const categoryLabels = getCategoryLabels(safeCategories);
   const projectImage = getProjectImage(project, safeCategories);
   const galleryImages = getGalleryImages(safeGalleryImages, projectImage);
+  
+  // Collect all images from content blocks for gallery navigation
+  const allGalleryImages = [...galleryImages];
+  safeContentBlocks.forEach(block => {
+    block.media.forEach(mediaItem => {
+      if (mediaItem.type === 'image' || mediaItem.type === 'gif') {
+        allGalleryImages.push(mediaItem.url);
+      }
+    });
+  });
+  
+  const handleImageClick = (imageUrl: string) => {
+    const index = allGalleryImages.findIndex(url => url === imageUrl);
+    if (index !== -1) {
+      setSelectedImageIndex(index);
+    }
+  };
 
   return (
     <>
       {/* Main Project Modal */}
-      <Dialog open={isOpen && !selectedImage} onOpenChange={onClose}>
+      <Dialog open={isOpen && selectedImageIndex === -1} onOpenChange={onClose}>
         <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-transparent border-none">
           <DialogTitle className="sr-only">{safeTitle}</DialogTitle>
           <DialogDescription className="sr-only">
@@ -81,7 +98,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
                       safeContentBlocks={safeContentBlocks}
                       galleryImages={galleryImages}
                       safeTitle={safeTitle}
-                      onImageClick={setSelectedImage}
+                      onImageClick={handleImageClick}
                     />
                   </div>
 
@@ -101,8 +118,10 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
 
       {/* Image Viewer Modal */}
       <ProjectModalImageViewer
-        selectedImage={selectedImage}
-        onClose={() => setSelectedImage(null)}
+        images={allGalleryImages}
+        currentIndex={selectedImageIndex}
+        onClose={() => setSelectedImageIndex(-1)}
+        onNavigate={setSelectedImageIndex}
       />
     </>
   );

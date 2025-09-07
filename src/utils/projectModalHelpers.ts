@@ -1,4 +1,4 @@
-import { DEFAULT_IMAGES, MOCK_GALLERY_IMAGES, type Project } from './projectModalConstants';
+import { DEFAULT_IMAGES, type Project } from './projectModalConstants';
 import { CATEGORIES } from './constants';
 
 // Helper function to get safe project data
@@ -32,17 +32,8 @@ export const getProjectImage = (project: Project, safeCategories: string[]) => {
   return DEFAULT_IMAGES[primaryCategory as keyof typeof DEFAULT_IMAGES] || DEFAULT_IMAGES.web;
 };
 
-// Helper function to get gallery images with fallback
+// Helper function to get gallery images (only real images, no mock data)
 export const getGalleryImages = (safeGalleryImages: string[], projectImage: string) => {
-  if (safeGalleryImages.length > 0) return safeGalleryImages;
-  
-  // Return mock gallery images for better masonry demonstration
-  return [
-    projectImage,
-    DEFAULT_IMAGES.web,
-    DEFAULT_IMAGES.apps,
-    DEFAULT_IMAGES.identity,
-    ...MOCK_GALLERY_IMAGES,
-    DEFAULT_IMAGES.management
-  ].filter((img, index, arr) => arr.indexOf(img) === index).slice(0, 8);
+  // Only return actual gallery images from the admin panel
+  return safeGalleryImages.length > 0 ? safeGalleryImages : [];
 };

@@ -19,6 +19,7 @@ interface MediaUploaderProps {
   maxFiles?: number;
   acceptedTypes?: string[];
   className?: string;
+  blockId?: string; // Add unique identifier for better ID generation
 }
 
 export function MediaUploader({ 
@@ -26,7 +27,8 @@ export function MediaUploader({
   onMediaChange, 
   maxFiles = 10,
   acceptedTypes = ['image/*', '.gif'],
-  className = "" 
+  className = "",
+  blockId = ""
 }: MediaUploaderProps) {
   const [urlInput, setUrlInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -46,13 +48,15 @@ export function MediaUploader({
       return;
     }
 
+    const uniqueId = `${blockId || 'media'}-url-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newMedia: MediaItem = {
-      id: Date.now().toString(),
+      id: uniqueId,
       url: urlInput.trim(),
       type: getMediaType(urlInput),
       name: urlInput.split('/').pop()?.split('?')[0] || 'Media'
     };
 
+    console.log(`Adding media to block ${blockId}:`, newMedia);
     onMediaChange([...media, newMedia]);
     setUrlInput('');
     toast.success('Media added successfully');
@@ -89,13 +93,16 @@ export function MediaUploader({
         // Create object URL for preview (in real app, would be Supabase Storage URL)
         const objectUrl = URL.createObjectURL(file);
         
+        const uniqueId = `${blockId || 'media'}-file-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`;
         const mediaItem: MediaItem = {
-          id: Date.now().toString() + i,
+          id: uniqueId,
           url: objectUrl,
           type: file.type === 'image/gif' ? 'gif' : 
                 file.type.startsWith('video/') ? 'video' : 'image',
           name: file.name
         };
+        
+        console.log(`Adding file to block ${blockId}:`, mediaItem);
         
         newMediaItems.push(mediaItem);
       }
@@ -119,6 +126,7 @@ export function MediaUploader({
   };
 
   const handleRemove = (id: string) => {
+    console.log(`Removing media ${id} from block ${blockId}`);
     const updatedMedia = media.filter(item => item.id !== id);
     onMediaChange(updatedMedia);
     toast.success('Media removed');
@@ -179,6 +187,11 @@ export function MediaUploader({
       <div className="space-y-2">
         <Label className="font-['Anonymous_Pro'] uppercase tracking-wide">
           Add Media URL (Images, GIFs, Videos)
+          {blockId && (
+            <span className="text-xs opacity-60 ml-2">
+              → Block: {blockId.split('-')[1] || blockId}
+            </span>
+          )}
         </Label>
         <div className="flex gap-2">
           <Input

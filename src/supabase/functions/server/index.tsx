@@ -53,6 +53,11 @@ app.post('/make-server-32d29310/projects', routes.createProject);
 app.put('/make-server-32d29310/projects/:id', routes.updateProject);
 app.delete('/make-server-32d29310/projects/:id', routes.deleteProject);
 app.get('/make-server-32d29310/tags', routes.getTags);
+
+// Hero routes
+app.get('/make-server-32d29310/hero', routes.getHeroData);
+app.put('/make-server-32d29310/hero', routes.updateHeroData);
+
 app.get('/make-server-32d29310/health', routes.healthCheck);
 
 // Root health check

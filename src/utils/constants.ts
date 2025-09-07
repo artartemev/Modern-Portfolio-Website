@@ -8,11 +8,7 @@ export const CATEGORIES = [
   { id: 'other', label: 'Other Projects' }
 ];
 
-export const THEMES = [
-  { id: 'light', label: 'Light & Clean' },
-  { id: 'dark', label: 'Dark & Modern' },
-  { id: 'mixed', label: 'Mixed Styles' }
-];
+
 
 export const YEARS = [2024, 2023, 2022, 2021, 2020, 2019];
 
