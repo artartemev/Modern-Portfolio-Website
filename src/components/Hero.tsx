@@ -15,9 +15,10 @@ const DEFAULT_HERO_DATA: HeroData = {
   image: imgRectangle1523
 };
 
-export function Hero() {
+export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
   const [heroData, setHeroData] = useState<HeroData>(DEFAULT_HERO_DATA);
   const [isLoading, setIsLoading] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
   useEffect(() => {
     loadHeroData();
@@ -40,6 +41,18 @@ export function Hero() {
     const portfolioSection = document.querySelector('[data-section="portfolio"]');
     if (portfolioSection) {
       portfolioSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleImageClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount >= 8) {
+      const password = window.prompt('Enter admin password');
+      if (password === 'goura') {
+        onUnlockAdmin?.();
+      }
+      setClickCount(0);
     }
   };
   return (
@@ -89,6 +102,7 @@ export function Hero() {
                 src={heroData.image}
                 alt={`${heroData.name} - ${heroData.title}`}
                 className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover aspect-[4/5]"
+                onClick={handleImageClick}
               />
             </div>
           </motion.div>
