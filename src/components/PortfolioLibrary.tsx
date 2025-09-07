@@ -208,7 +208,7 @@ export function PortfolioLibrary() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="font-['Feature_Mono'] text-6xl md:text-7xl text-[#323232] uppercase tracking-[0.3em] mb-4">
+          <h2 className="font-['Anonymous_Pro'] text-6xl md:text-7xl text-[#323232] uppercase tracking-[0.3em] mb-4">
             Portfolio
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#323232] to-transparent mx-auto mb-6" />
