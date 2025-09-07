@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { Hero } from './components/Hero';
 import { PortfolioLibrary } from './components/PortfolioLibrary';
 import { AdminPanel } from './components/AdminPanel';
-import { ApiDebug } from './components/ApiDebug';
 import { Button } from './components/ui/button';
 import { Toaster } from './components/ui/sonner';
-import { Settings, Eye, ArrowLeft } from 'lucide-react';
-import { motion } from 'motion/react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'portfolio' | 'admin'>('portfolio');
@@ -43,26 +41,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
-      {/* Admin Access Button */}
-      <motion.div
-        className="fixed top-8 right-8 z-50"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 1 }}
-      >
-        <Button
-          onClick={() => setCurrentView('admin')}
-          className="bg-white/10 backdrop-blur-md border border-white/20 text-[#323232] hover:bg-white/20 transition-all duration-300"
-          size="sm"
-        >
-          <Settings className="w-4 h-4 mr-2" />
-          <span className="font-['Anonymous_Pro'] uppercase tracking-wide">Admin</span>
-        </Button>
-      </motion.div>
-
-      <Hero />
+      <Hero onUnlockAdmin={() => setCurrentView('admin')} />
       <PortfolioLibrary />
-      <ApiDebug />
       <Toaster />
     </div>
   );

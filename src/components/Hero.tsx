@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import imgRectangle1523 from "figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png";
+import imgRectangle1523 from '@/assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
 import { heroApi, type HeroData } from '../utils/api';
 
 const DEFAULT_HERO_DATA: HeroData = {
@@ -12,12 +12,13 @@ const DEFAULT_HERO_DATA: HeroData = {
   primaryButtonText: 'View Portfolio',
   secondaryButtonText: 'Contact Me',
   contactLink: 'https://t.me/artartemev',
-  image: 'figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png'
+  image: imgRectangle1523
 };
 
-export function Hero() {
+export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
   const [heroData, setHeroData] = useState<HeroData>(DEFAULT_HERO_DATA);
   const [isLoading, setIsLoading] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
   useEffect(() => {
     loadHeroData();
@@ -40,6 +41,18 @@ export function Hero() {
     const portfolioSection = document.querySelector('[data-section="portfolio"]');
     if (portfolioSection) {
       portfolioSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleImageClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount >= 8) {
+      const password = window.prompt('Enter admin password');
+      if (password === 'goura') {
+        onUnlockAdmin?.();
+      }
+      setClickCount(0);
     }
   };
   return (
@@ -86,9 +99,10 @@ export function Hero() {
           >
             <div className="relative">
               <img
-                src={heroData.image.startsWith('figma:') ? imgRectangle1523 : heroData.image}
+                src={heroData.image}
                 alt={`${heroData.name} - ${heroData.title}`}
                 className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover aspect-[4/5]"
+                onClick={handleImageClick}
               />
             </div>
           </motion.div>
