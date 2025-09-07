@@ -1,6 +1,7 @@
 import { Context } from 'hono';
 import * as kv from './kv_store.tsx';
 import { Project, SAMPLE_PROJECTS, ContentBlock, MediaItem } from './constants.tsx';
+import heroImage from '../../../assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
 
 // Helper function to handle database errors
 const handleDatabaseError = (error: any, operation: string, c: Context) => {
@@ -372,7 +373,7 @@ const DEFAULT_HERO_DATA = {
   primaryButtonText: 'View Portfolio',
   secondaryButtonText: 'Contact Me',
   contactLink: 'https://t.me/artartemev',
-  image: 'figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png'
+  image: heroImage
 };
 
 // Get hero data

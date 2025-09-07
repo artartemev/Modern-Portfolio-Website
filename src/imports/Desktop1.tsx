@@ -1,5 +1,5 @@
 import svgPaths from "./svg-gck1tm0yk4";
-import imgRectangle1523 from "figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png";
+import imgRectangle1523 from '@/assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
 
 function Card() {
   return (

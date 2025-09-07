@@ -10,6 +10,7 @@ import { toast } from 'sonner@2.0.3';
 import { Save, RefreshCcw, User, FileText, Link, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import defaultHeroImage from '@/assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
 
 interface HeroData {
   name: string;
@@ -32,7 +33,7 @@ const DEFAULT_HERO_DATA: HeroData = {
   primaryButtonText: 'View Portfolio',
   secondaryButtonText: 'Contact Me',
   contactLink: 'https://t.me/artartemev',
-  image: 'figma:asset/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png'
+  image: defaultHeroImage
 };
 
 export function HeroAdmin() {
@@ -401,7 +402,7 @@ export function HeroAdmin() {
                   id="image"
                   value={heroData.image}
                   onChange={(e) => handleInputChange('image', e.target.value)}
-                  placeholder="figma:asset/... or https://..."
+                  placeholder="/assets/... or https://..."
                   className="font-['Anonymous_Pro']"
                 />
                 <p className="text-sm text-[#666] font-['Anonymous_Pro']">
