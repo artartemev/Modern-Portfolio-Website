@@ -5,6 +5,7 @@ import { Switch } from './ui/switch';
 import { Checkbox } from './ui/checkbox';
 import { Grid, List, Star, X } from 'lucide-react';
 import { motion } from 'motion/react';
+import { cn } from './ui/utils';
 import { CATEGORIES, YEARS } from '../utils/constants';
 
 interface FilterControlsProps {
@@ -20,6 +21,7 @@ interface FilterControlsProps {
   onTopToggle: () => void;
   view: 'grid' | 'list';
   onViewChange: (view: 'grid' | 'list') => void;
+  className?: string;
 }
 
 export function FilterControls({
@@ -35,6 +37,7 @@ export function FilterControls({
   onTopToggle,
   view,
   onViewChange,
+  className,
 }: FilterControlsProps) {
   const handleCategoryToggle = (categoryId: string) => {
     const newCategories = selectedCategories.includes(categoryId)
@@ -48,12 +51,13 @@ export function FilterControls({
   };
 
   return (
-    <motion.div
-      className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-6"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className={cn('hidden lg:block', className)}>
+      <motion.div
+        className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6 space-y-6"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+      >
       {/* View Toggle */}
       <div className="space-y-3">
         <h3 className="font-['Anonymous_Pro'] text-sm text-[#323232] uppercase tracking-wider">View</h3>
@@ -207,6 +211,7 @@ export function FilterControls({
           </Button>
         )}
       </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

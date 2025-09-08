@@ -7,6 +7,9 @@ import { FilterControls } from './FilterControls';
 import { LoadingState, ErrorState, EmptyState } from './LoadingState';
 import { projectApi, type Project } from '../utils/api';
 import { FALLBACK_PROJECTS, FALLBACK_TAGS } from '../utils/constants';
+import { Button } from './ui/button';
+import { Drawer, DrawerTrigger, DrawerContent } from './ui/drawer';
+import { Filter } from 'lucide-react';
 
 export function PortfolioLibrary() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -22,6 +25,7 @@ export function PortfolioLibrary() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usingFallbackData, setUsingFallbackData] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Load projects and tags from API
   useEffect(() => {
@@ -165,6 +169,20 @@ export function PortfolioLibrary() {
     setSelectedProject(null);
   };
 
+  const filterControlsProps = {
+    selectedCategories,
+    onCategoriesChange: setSelectedCategories,
+    selectedYear,
+    onYearChange: setSelectedYear,
+    selectedTags,
+    onTagToggle: handleTagToggle,
+    availableTags,
+    showTopOnly,
+    onTopToggle: () => setShowTopOnly(!showTopOnly),
+    view,
+    onViewChange: setView,
+  };
+
   return (
     <section data-section="portfolio" className="min-h-screen py-20 relative overflow-hidden">
       {/* Background with glass effects */}
@@ -230,23 +248,21 @@ export function PortfolioLibrary() {
           )}
         </motion.div>
 
+        <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
+          <DrawerTrigger asChild>
+            <Button variant="outline" size="icon" className="mb-8 lg:hidden">
+              <Filter className="h-4 w-4" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="p-4">
+            <FilterControls {...filterControlsProps} className="block" />
+          </DrawerContent>
+        </Drawer>
+
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
-            <FilterControls
-              selectedCategories={selectedCategories}
-              onCategoriesChange={setSelectedCategories}
-              selectedYear={selectedYear}
-              onYearChange={setSelectedYear}
-
-              selectedTags={selectedTags}
-              onTagToggle={handleTagToggle}
-              availableTags={availableTags}
-              showTopOnly={showTopOnly}
-              onTopToggle={() => setShowTopOnly(!showTopOnly)}
-              view={view}
-              onViewChange={setView}
-            />
+          <div className="lg:col-span-1 hidden lg:block">
+            <FilterControls {...filterControlsProps} />
           </div>
 
           {/* Projects Grid/List */}
