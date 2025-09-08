@@ -152,10 +152,11 @@ export function MediaUploader({
                   muted
                 />
               ) : (
-                <img 
-                  src={item.url} 
-                  alt={item.name || 'Media'} 
+                <img
+                  src={item.url}
+                  alt={item.name || 'Media'}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               )}
             </div>

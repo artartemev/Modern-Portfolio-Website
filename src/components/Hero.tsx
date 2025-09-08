@@ -103,6 +103,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
                 alt={`${heroData.name} - ${heroData.title}`}
                 className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover aspect-[4/5]"
                 onClick={handleImageClick}
+                loading="lazy"
               />
             </div>
           </motion.div>
