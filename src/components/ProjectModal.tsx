@@ -53,7 +53,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
     <>
       {/* Main Project Modal */}
       <Dialog open={isOpen && selectedImageIndex === -1} onOpenChange={onClose}>
-        <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-transparent border-none">
+        <DialogContent className="max-w-full sm:max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-transparent border-none">
           <DialogTitle className="sr-only">{safeTitle}</DialogTitle>
           <DialogDescription className="sr-only">
             {safeDescription} - Detailed project case study including overview, challenge, solution, and results.
@@ -88,7 +88,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
               />
 
               {/* Content Sections */}
-              <div className="p-12">
+              <div className="p-4 sm:p-8 md:p-12">
                 <div className="grid grid-cols-1 xl:grid-cols-4 gap-12">
                   {/* Main Content */}
                   <div className="xl:col-span-3 space-y-12">
