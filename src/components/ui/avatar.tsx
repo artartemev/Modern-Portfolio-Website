@@ -29,7 +29,9 @@ function AvatarImage({
   const [currentSrc, setCurrentSrc] = React.useState(src);
 
   React.useEffect(() => {
-    setCurrentSrc(src);
+    if (src !== undefined) {
+      setCurrentSrc(src);
+    }
   }, [src]);
 
   return (
