@@ -157,7 +157,7 @@ export function HeroAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-['Feature_Mono'] text-2xl text-[#323232] uppercase tracking-wider">
+          <h2 className="font-['Anonymous_Pro'] text-2xl text-[#323232] uppercase tracking-wider">
             Hero Management
           </h2>
           <p className="text-[#666] font-['Anonymous_Pro'] mt-2">

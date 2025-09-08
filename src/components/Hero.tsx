@@ -116,7 +116,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
           >
             <div className="space-y-4">
               <motion.h1
-                className="font-['Feature_Mono'] tracking-[0.2em] uppercase text-[#323232]"
+                className="font-['Anonymous_Pro'] tracking-[0.2em] uppercase text-[#323232]"
                 style={{ fontSize: 'clamp(4rem, 8vw, 10rem)', fontWeight: 'bold', lineHeight: '0.9' }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}

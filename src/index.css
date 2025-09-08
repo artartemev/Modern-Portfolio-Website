@@ -3190,13 +3190,9 @@
     font-family: Anonymous Pro\:Regular, sans-serif;
   }
 
-  .font-\[\'Feature_Mono\'\] {
-    font-family: Feature Mono;
-  }
-
-  .font-\[\'Inter\'\] {
-    font-family: Inter;
-  }
+    .font-\[\'Inter\'\] {
+      font-family: Inter;
+    }
 
   .font-\[\'Inter\:Bold\'\,_sans-serif\] {
     font-family: Inter\:Bold, sans-serif;

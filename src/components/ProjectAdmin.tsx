@@ -224,7 +224,7 @@ export function ProjectAdmin() {
             
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-md">
               <DialogHeader>
-                <DialogTitle className="font-['Feature_Mono'] text-2xl text-[#323232] uppercase tracking-wider">
+                <DialogTitle className="font-['Anonymous_Pro'] text-2xl text-[#323232] uppercase tracking-wider">
                   {editingProject ? 'Edit Project' : 'Add New Project'}
                 </DialogTitle>
                 <DialogDescription className="font-['Anonymous_Pro'] text-[#323232]/70 uppercase tracking-wide text-sm">
