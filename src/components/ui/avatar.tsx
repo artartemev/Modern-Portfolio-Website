@@ -26,19 +26,11 @@ function AvatarImage({
   src,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  const [currentSrc, setCurrentSrc] = React.useState(src);
-
-  React.useEffect(() => {
-    if (src !== undefined) {
-      setCurrentSrc(src);
-    }
-  }, [src]);
-
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
       className={cn("aspect-square size-full", className)}
-      src={currentSrc}
+      src={src}
       {...props}
     />
   );
