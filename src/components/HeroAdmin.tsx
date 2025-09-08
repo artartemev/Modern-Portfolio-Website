@@ -10,7 +10,6 @@ import { toast } from 'sonner@2.0.3';
 import { Save, RefreshCcw, User, FileText, Link, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
-import defaultHeroImage from '@/assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
 
 interface HeroData {
   name: string;
@@ -33,7 +32,7 @@ const DEFAULT_HERO_DATA: HeroData = {
   primaryButtonText: 'View Portfolio',
   secondaryButtonText: 'Contact Me',
   contactLink: 'https://t.me/artartemev',
-  image: defaultHeroImage
+  image: ''
 };
 
 export function HeroAdmin() {
