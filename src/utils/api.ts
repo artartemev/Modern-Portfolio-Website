@@ -123,10 +123,10 @@ const transformApiProject = (apiProject: ApiProject): Project => {
 
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  console.log(`Making API call to: ${url}`);
-  console.log(`Project ID: ${projectId}`);
-  console.log(`Public Anon Key: ${publicAnonKey}`);
-  
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Making API call to: ${url}`);
+  }
+
   try {
     const response = await fetch(url, {
       ...options,
@@ -137,22 +137,28 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
       },
     });
 
-    console.log(`Response status: ${response.status}`);
-    console.log(`Response ok: ${response.ok}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Response status: ${response.status}`);
+      console.log(`Response ok: ${response.ok}`);
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`API Error Response: ${errorText}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`API Error Response: ${errorText}`);
+      }
       let errorData: any = {};
       try {
         errorData = JSON.parse(errorText);
       } catch (e) {
         console.error('Could not parse error response as JSON');
       }
-      
+
       // Check for specific connectivity issues
       if (response.status === 503 && errorData.fallbackMode) {
-        console.log('API returned 503 with fallback mode - database connectivity issues');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('API returned 503 with fallback mode - database connectivity issues');
+        }
         throw new Error(`Database connectivity issue: ${errorData.message || 'Database unavailable'}`);
       }
       
@@ -160,13 +166,15 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     }
 
     const result = await response.json();
-    console.log(`API Success Response:`, result);
-    
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`API Success Response:`, result);
+    }
+
     // Log if we're running in fallback mode
-    if (result.fallbackMode) {
+    if (result.fallbackMode && process.env.NODE_ENV === 'development') {
       console.log('API is running in fallback mode:', result.message);
     }
-    
+
     return result;
   } catch (error) {
     console.error(`API Call failed for ${url}:`, error);

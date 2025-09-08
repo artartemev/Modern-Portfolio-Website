@@ -154,32 +154,33 @@ export function CoverImageUploader({
       {value && (
         <Card className="bg-white/10 backdrop-blur-md border-white/20">
           <CardContent className="p-4">
-            <div className="flex items-start gap-4">
-              <div className="flex-1">
-                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-2 max-w-xs">
-                  <img 
-                    src={value} 
-                    alt="Cover preview" 
-                    className="w-full h-full object-cover"
-                  />
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-2 max-w-xs">
+                    <img
+                      src={value}
+                      alt="Cover preview"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-blue-600" />
+                    <span className="font-['Anonymous_Pro'] text-sm text-[#323232] truncate">
+                      {value.startsWith('blob:') ? 'Uploaded image' : value}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-blue-600" />
-                  <span className="font-['Anonymous_Pro'] text-sm text-[#323232] truncate">
-                    {value.startsWith('blob:') ? 'Uploaded image' : value}
-                  </span>
-                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleRemove}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                onClick={handleRemove}
-                className="text-red-600 hover:text-red-700"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
           </CardContent>
         </Card>
       )}
