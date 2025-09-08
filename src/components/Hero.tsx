@@ -117,7 +117,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
             <div className="space-y-4">
               <motion.h1
                 className="font-['Anonymous_Pro'] tracking-[0.2em] uppercase text-[#323232]"
-                style={{ fontSize: 'clamp(4rem, 8vw, 10rem)', fontWeight: 'bold', lineHeight: '0.9' }}
+                style={{ fontSize: 'clamp(2rem, 8vw, 6rem)', fontWeight: 'bold', lineHeight: '0.9' }}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -157,14 +157,14 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
             </motion.div>
 
             <motion.div
-              className="flex gap-4"
+              className="flex flex-col gap-4 sm:flex-row"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1 }}
             >
               <button 
                 onClick={scrollToPortfolio}
-                className="group relative px-8 py-4 bg-[#323232] text-white font-['Anonymous_Pro'] uppercase tracking-wider overflow-hidden rounded-xl transition-all duration-300 hover:scale-105"
+                className="group relative px-6 sm:px-8 py-4 bg-[#323232] text-white font-['Anonymous_Pro'] uppercase tracking-wider overflow-hidden rounded-xl transition-all duration-300 hover:scale-105"
               >
                 <span className="relative z-10">{heroData.primaryButtonText}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#323232] to-[#555] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
@@ -174,7 +174,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
                 href={heroData.contactLink} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group relative px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-[#323232] font-['Anonymous_Pro'] uppercase tracking-wider rounded-xl transition-all duration-300 hover:scale-105 hover:bg-white/20 inline-block"
+                className="group relative px-6 sm:px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-[#323232] font-['Anonymous_Pro'] uppercase tracking-wider rounded-xl transition-all duration-300 hover:scale-105 hover:bg-white/20 inline-block"
               >
                 {heroData.secondaryButtonText}
               </a>
