@@ -5,6 +5,7 @@ import { Label } from './ui/label';
 import { Card, CardContent } from './ui/card';
 import { Upload, X, Image, Film } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
+import { supabase } from '../utils/supabase/client';
 
 interface MediaItem {
   id: string;
@@ -71,13 +72,11 @@ export function MediaUploader({
     setIsLoading(true);
     
     try {
-      // In a real implementation, you would upload to Supabase Storage here
-      // For now, we'll simulate the upload process
       const newMediaItems: MediaItem[] = [];
-      
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
+
         // Validate file type
         const isValidType = acceptedTypes.some(type => {
           if (type === 'image/*') return file.type.startsWith('image/');
@@ -90,25 +89,40 @@ export function MediaUploader({
           continue;
         }
 
-        // Create object URL for preview (in real app, would be Supabase Storage URL)
-        const objectUrl = URL.createObjectURL(file);
-        
         const uniqueId = `${blockId || 'media'}-file-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`;
+        const filePath = `${blockId || 'media'}/${uniqueId}-${file.name}`;
+
+        const { error } = await supabase.storage
+          .from('case-media')
+          .upload(filePath, file);
+
+        if (error) {
+          console.error('Upload error:', error);
+          toast.error(`Failed to upload ${file.name}`);
+          continue;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('case-media')
+          .getPublicUrl(filePath);
+
         const mediaItem: MediaItem = {
           id: uniqueId,
-          url: objectUrl,
-          type: file.type === 'image/gif' ? 'gif' : 
+          url: publicUrl,
+          type: file.type === 'image/gif' ? 'gif' :
                 file.type.startsWith('video/') ? 'video' : 'image',
           name: file.name
         };
-        
+
         console.log(`Adding file to block ${blockId}:`, mediaItem);
-        
+
         newMediaItems.push(mediaItem);
       }
 
-      onMediaChange([...media, ...newMediaItems]);
-      toast.success(`${newMediaItems.length} file(s) uploaded successfully`);
+      if (newMediaItems.length > 0) {
+        onMediaChange([...media, ...newMediaItems]);
+        toast.success(`${newMediaItems.length} file(s) uploaded successfully`);
+      }
     } catch (error) {
       console.error('Upload error:', error);
       toast.error('Failed to upload files');
