@@ -7,6 +7,7 @@ import { FilterControls } from './FilterControls';
 import { LoadingState, ErrorState, EmptyState } from './LoadingState';
 import { projectApi, type Project } from '../utils/api';
 import { FALLBACK_PROJECTS, FALLBACK_TAGS } from '../utils/constants';
+import devLog from '../utils/devLog';
 
 export function PortfolioLibrary() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -31,7 +32,7 @@ export function PortfolioLibrary() {
         setError(null);
         setUsingFallbackData(false);
         
-        console.log('Starting to load portfolio data...');
+        devLog('Starting to load portfolio data...');
         
         // Try to load data from API
         const [projectsData, tagsData] = await Promise.all([
@@ -39,14 +40,14 @@ export function PortfolioLibrary() {
           projectApi.getTags()
         ]);
         
-        console.log('Loaded projects from API:', projectsData);
-        console.log('Loaded tags from API:', tagsData);
+        devLog('Loaded projects from API:', projectsData);
+        devLog('Loaded tags from API:', tagsData);
         
         // Validate and use API data if available
         if (Array.isArray(projectsData) && projectsData.length > 0) {
           setProjects(projectsData);
           setAvailableTags(Array.isArray(tagsData) ? tagsData : []);
-          console.log('Using API data successfully');
+          devLog('Using API data successfully');
         } else {
           throw new Error('No projects returned from API');
         }
@@ -55,9 +56,9 @@ export function PortfolioLibrary() {
         
         // Immediately use fallback data when API fails
         try {
-          console.log('Loading fallback data...');
-          console.log('Fallback projects:', FALLBACK_PROJECTS);
-          console.log('Fallback tags:', FALLBACK_TAGS);
+          devLog('Loading fallback data...');
+          devLog('Fallback projects:', FALLBACK_PROJECTS);
+          devLog('Fallback tags:', FALLBACK_TAGS);
           
           // Validate fallback data structure
           const validFallbackProjects = FALLBACK_PROJECTS.filter(project => {
@@ -79,7 +80,7 @@ export function PortfolioLibrary() {
             setAvailableTags(Array.isArray(FALLBACK_TAGS) ? FALLBACK_TAGS : []);
             setUsingFallbackData(true);
             setError(null); // Clear any error since fallback worked
-            console.log(`Successfully loaded ${validFallbackProjects.length} fallback projects`);
+            devLog(`Successfully loaded ${validFallbackProjects.length} fallback projects`);
           } else {
             throw new Error('Fallback data validation failed');
           }

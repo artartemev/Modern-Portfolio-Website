@@ -9,6 +9,7 @@ import { ProjectModalContent } from './ProjectModalContent';
 import { ProjectModalImageViewer } from './ProjectModalImageViewer';
 import { getSafeProjectData, getCategoryLabels, getProjectImage, getGalleryImages } from '../utils/projectModalHelpers';
 import type { ProjectModalProps } from '../utils/projectModalConstants';
+import devLog from '../utils/devLog';
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(-1);
@@ -26,7 +27,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   } = getSafeProjectData(project);
 
   // Debug content blocks
-  console.log('ProjectModal - Content blocks for project:', safeTitle, safeContentBlocks);
+  devLog('ProjectModal - Content blocks for project:', safeTitle, safeContentBlocks);
 
   const categoryLabels = getCategoryLabels(safeCategories);
   const projectImage = getProjectImage(project, safeCategories);

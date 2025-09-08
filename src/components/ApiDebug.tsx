@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { projectApi } from '../utils/api';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { Badge } from './ui/badge';
+import devLog from '../utils/devLog';
 
 export function ApiDebug() {
   const [debugInfo, setDebugInfo] = useState<any>({});
@@ -18,7 +19,7 @@ export function ApiDebug() {
 
       try {
         // Test health check
-        console.log('Testing health check...');
+        devLog('Testing health check...');
         const healthResult = await projectApi.healthCheck();
         info.healthCheck = {
           success: healthResult.success,
@@ -35,7 +36,7 @@ export function ApiDebug() {
 
       try {
         // Test projects fetch
-        console.log('Testing projects fetch...');
+        devLog('Testing projects fetch...');
         const projects = await projectApi.getProjects();
         info.projects = { count: projects.length, success: true };
       } catch (error) {
@@ -44,7 +45,7 @@ export function ApiDebug() {
 
       try {
         // Test tags fetch
-        console.log('Testing tags fetch...');
+        devLog('Testing tags fetch...');
         const tags = await projectApi.getTags();
         info.tags = { count: tags.length, success: true };
       } catch (error) {

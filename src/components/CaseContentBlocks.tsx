@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { MediaUploader } from './MediaUploader';
 import { Plus, Trash2, MoveUp, MoveDown, Type, FileText, Image } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
+import devLog from '../utils/devLog';
 
 export interface MediaItem {
   id: string;
@@ -50,7 +51,7 @@ export function CaseContentBlocks({
   };
 
   const updateBlock = (id: string, updates: Partial<ContentBlock>) => {
-    console.log(`Updating block ${id}:`, updates);
+    devLog(`Updating block ${id}:`, updates);
     const updatedBlocks = blocks.map(block => 
       block.id === id ? { ...block, ...updates } : block
     );

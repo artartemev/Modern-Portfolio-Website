@@ -11,6 +11,7 @@ CREATE INDEX IF NOT EXISTS idx_kv_store_32d29310_key ON kv_store_32d29310(key);
 */
 
 import { createClient } from "@supabase/supabase-js";
+import devLog from '../../../utils/devLog.ts';
 
 const client = () => createClient(
   Deno.env.get("SUPABASE_URL"),
@@ -26,7 +27,7 @@ const handleDbError = (error: any, operation: string): Error => {
       error.message?.includes('Error code 525') ||
       error.message?.includes('<!DOCTYPE html>') ||
       error.message?.includes('Cloudflare')) {
-    console.log(`SSL/Connection error detected during ${operation}, switching to fallback mode`);
+    devLog(`SSL/Connection error detected during ${operation}, switching to fallback mode`);
     return new Error(`Database connection unavailable (SSL issue), using fallback mode`);
   }
   
@@ -43,7 +44,7 @@ const handleDbError = (error: any, operation: string): Error => {
       error.message?.includes('network') ||
       error.message?.includes('timeout') ||
       error.message?.includes('ECONNREFUSED')) {
-    console.log(`Network error detected during ${operation}, switching to fallback mode`);
+    devLog(`Network error detected during ${operation}, switching to fallback mode`);
     return new Error(`Database connection unavailable (network issue), using fallback mode`);
   }
   
@@ -233,9 +234,9 @@ export const testConnection = async (): Promise<boolean> => {
         error.message?.includes('Error code 525') ||
         error.message?.includes('<!DOCTYPE html>') ||
         error.message?.includes('Cloudflare')) {
-      console.log('SSL/Cloudflare connection issue detected - application will run in fallback mode');
+      devLog('SSL/Cloudflare connection issue detected - application will run in fallback mode');
     } else if (error.message?.includes('Database connection unavailable')) {
-      console.log('Database connection issue detected - application will run in fallback mode');
+      devLog('Database connection issue detected - application will run in fallback mode');
     }
     
     return false;
@@ -255,9 +256,9 @@ export const ensureTable = async (): Promise<boolean> => {
     
     if (error) {
       if (error.message?.includes('does not exist')) {
-        console.log('Table kv_store_32d29310 does not exist');
-        console.log('Please create it manually in Supabase dashboard with this SQL:');
-        console.log(`
+        devLog('Table kv_store_32d29310 does not exist');
+        devLog('Please create it manually in Supabase dashboard with this SQL:');
+        devLog(`
           CREATE TABLE kv_store_32d29310 (
             key TEXT NOT NULL PRIMARY KEY,
             value JSONB NOT NULL,
@@ -272,7 +273,7 @@ export const ensureTable = async (): Promise<boolean> => {
       return false;
     }
     
-    console.log('Table kv_store_32d29310 exists and is accessible');
+    devLog('Table kv_store_32d29310 exists and is accessible');
     return true;
   } catch (error) {
     console.error('Error checking table existence:', error);

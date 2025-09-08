@@ -18,6 +18,7 @@ import { TagInput } from './TagInput';
 import { CategorySelector } from './CategorySelector';
 import { Plus, Edit2, Trash2, Save, X, FileText, Layout } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
+import devLog from '../utils/devLog';
 
 interface ProjectFormData {
   name: string;
@@ -95,7 +96,7 @@ export function ProjectAdmin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('Submitting project with content blocks:', formData.contentBlocks);
+    devLog('Submitting project with content blocks:', formData.contentBlocks);
     
     try {
       if (editingProject) {
@@ -425,7 +426,7 @@ export function ProjectAdmin() {
                       <CaseContentBlocks
                         blocks={formData.contentBlocks}
                         onBlocksChange={(blocks) => {
-                          console.log('Content blocks changed:', blocks);
+                          devLog('Content blocks changed:', blocks);
                           setFormData({ ...formData, contentBlocks: blocks });
                         }}
                       />

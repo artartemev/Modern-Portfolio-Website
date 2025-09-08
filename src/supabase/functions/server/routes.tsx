@@ -2,6 +2,7 @@ import { Context } from 'hono';
 import * as kv from './kv_store.tsx';
 import { Project, SAMPLE_PROJECTS, ContentBlock, MediaItem } from './constants.tsx';
 import heroImage from '../../../assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
+import devLog from '../../../utils/devLog.ts';
 
 // Helper function to handle database errors
 const handleDatabaseError = (error: any, operation: string, c: Context) => {
@@ -13,7 +14,7 @@ const handleDatabaseError = (error: any, operation: string, c: Context) => {
       error.message?.includes('<!DOCTYPE html>') ||
       error.message?.includes('Cloudflare') ||
       error.message?.includes('Database connection unavailable')) {
-    console.log(`SSL/Connection error during ${operation}, returning fallback data`);
+    devLog(`SSL/Connection error during ${operation}, returning fallback data`);
     return c.json({ 
       success: true, // Return success but use fallback mode
       error: 'Database connection unavailable (SSL/connection issue)',
@@ -44,13 +45,13 @@ const handleDatabaseError = (error: any, operation: string, c: Context) => {
 // Get all projects
 export const getProjects = async (c: Context) => {
   try {
-    console.log('Fetching all projects...');
+    devLog('Fetching all projects...');
     
     const projectIds = await kv.get('project:ids') || [];
-    console.log(`Found ${projectIds.length} project IDs:`, projectIds);
+    devLog(`Found ${projectIds.length} project IDs:`, projectIds);
     
     if (projectIds.length === 0) {
-      console.log('No project IDs found, returning sample data');
+      devLog('No project IDs found, returning sample data');
       return c.json({
         success: true,
         projects: SAMPLE_PROJECTS,
@@ -61,14 +62,14 @@ export const getProjects = async (c: Context) => {
     
     const projects = await kv.mget(projectIds.map((id: string) => `project:${id}`));
     const validProjects = projects.filter(Boolean);
-    console.log(`Retrieved ${validProjects.length} valid projects`);
+    devLog(`Retrieved ${validProjects.length} valid projects`);
     
     return c.json({
       success: true,
       projects: validProjects
     });
   } catch (error) {
-    console.log('Database error during getProjects:', error.message);
+    devLog('Database error during getProjects:', error.message);
     
     // Return fallback data with appropriate message
     const fallbackResponse = {
@@ -92,7 +93,7 @@ export const getProjects = async (c: Context) => {
 export const getProject = async (c: Context) => {
   try {
     const id = c.req.param('id');
-    console.log(`Fetching project with ID: ${id}`);
+    devLog(`Fetching project with ID: ${id}`);
     
     const project = await kv.get(`project:${id}`);
     
@@ -138,7 +139,7 @@ export const getProject = async (c: Context) => {
 export const createProject = async (c: Context) => {
   try {
     const projectData = await c.req.json();
-    console.log('Creating new project:', projectData);
+    devLog('Creating new project:', projectData);
     
     // Validate required fields
     if (!projectData.name) {
@@ -185,7 +186,7 @@ export const createProject = async (c: Context) => {
     const projectIds = await kv.get('project:ids') || [];
     await kv.set('project:ids', [...projectIds, project.id]);
     
-    console.log(`Project created successfully with ID: ${project.id}`);
+    devLog(`Project created successfully with ID: ${project.id}`);
     
     return c.json({
       success: true,
@@ -196,7 +197,7 @@ export const createProject = async (c: Context) => {
     // Special handling for SSL/connection errors
     if (error.message?.includes('SSL handshake failed') || 
         error.message?.includes('Database connection unavailable')) {
-      console.log('Cannot create project due to database connectivity issues');
+      devLog('Cannot create project due to database connectivity issues');
       return c.json({
         success: false,
         error: 'Database connectivity issue',
@@ -215,7 +216,7 @@ export const updateProject = async (c: Context) => {
   try {
     const id = c.req.param('id');
     const updateData = await c.req.json();
-    console.log(`Updating project ${id}:`, updateData);
+    devLog(`Updating project ${id}:`, updateData);
     
     const existingProject = await kv.get(`project:${id}`);
     if (!existingProject) {
@@ -235,7 +236,7 @@ export const updateProject = async (c: Context) => {
     
     await kv.set(`project:${id}`, updatedProject);
     
-    console.log(`Project ${id} updated successfully`);
+    devLog(`Project ${id} updated successfully`);
     
     return c.json({
       success: true,
@@ -246,7 +247,7 @@ export const updateProject = async (c: Context) => {
     // Special handling for SSL/connection errors
     if (error.message?.includes('SSL handshake failed') || 
         error.message?.includes('Database connection unavailable')) {
-      console.log('Cannot update project due to database connectivity issues');
+      devLog('Cannot update project due to database connectivity issues');
       return c.json({
         success: false,
         error: 'Database connectivity issue',
@@ -264,7 +265,7 @@ export const updateProject = async (c: Context) => {
 export const deleteProject = async (c: Context) => {
   try {
     const id = c.req.param('id');
-    console.log(`Deleting project with ID: ${id}`);
+    devLog(`Deleting project with ID: ${id}`);
     
     const existingProject = await kv.get(`project:${id}`);
     if (!existingProject) {
@@ -282,7 +283,7 @@ export const deleteProject = async (c: Context) => {
     const projectIds = await kv.get('project:ids') || [];
     await kv.set('project:ids', projectIds.filter((projectId: string) => projectId !== id));
     
-    console.log(`Project ${id} deleted successfully`);
+    devLog(`Project ${id} deleted successfully`);
     
     return c.json({
       success: true,
@@ -296,7 +297,7 @@ export const deleteProject = async (c: Context) => {
 // Get available tags
 export const getTags = async (c: Context) => {
   try {
-    console.log('Fetching available tags...');
+    devLog('Fetching available tags...');
     
     const projectIds = await kv.get('project:ids') || [];
     
@@ -334,7 +335,7 @@ export const getTags = async (c: Context) => {
     });
     
     const sortedTags = Array.from(tags).sort();
-    console.log(`Found ${sortedTags.length} unique tags`);
+    devLog(`Found ${sortedTags.length} unique tags`);
     
     return c.json({
       success: true,
@@ -379,12 +380,12 @@ const DEFAULT_HERO_DATA = {
 // Get hero data
 export const getHeroData = async (c: Context) => {
   try {
-    console.log('Fetching hero data...');
+    devLog('Fetching hero data...');
     
     const heroData = await kv.get('hero:data');
     
     if (!heroData) {
-      console.log('No hero data found, returning default data');
+      devLog('No hero data found, returning default data');
       return c.json({
         success: true,
         hero: DEFAULT_HERO_DATA,
@@ -398,7 +399,7 @@ export const getHeroData = async (c: Context) => {
       hero: heroData
     });
   } catch (error) {
-    console.log('Database error during getHeroData:', error.message);
+    devLog('Database error during getHeroData:', error.message);
     
     return c.json({
       success: true,
@@ -413,7 +414,7 @@ export const getHeroData = async (c: Context) => {
 export const updateHeroData = async (c: Context) => {
   try {
     const heroData = await c.req.json();
-    console.log('Updating hero data:', heroData);
+    devLog('Updating hero data:', heroData);
     
     // Validate required fields
     if (!heroData.name) {
@@ -432,7 +433,7 @@ export const updateHeroData = async (c: Context) => {
     
     await kv.set('hero:data', updatedHero);
     
-    console.log('Hero data updated successfully');
+    devLog('Hero data updated successfully');
     
     return c.json({
       success: true,
@@ -443,7 +444,7 @@ export const updateHeroData = async (c: Context) => {
     // Special handling for SSL/connection errors
     if (error.message?.includes('SSL handshake failed') || 
         error.message?.includes('Database connection unavailable')) {
-      console.log('Cannot update hero data due to database connectivity issues');
+      devLog('Cannot update hero data due to database connectivity issues');
       return c.json({
         success: false,
         error: 'Database connectivity issue',
@@ -460,13 +461,13 @@ export const updateHeroData = async (c: Context) => {
 // Health check
 export const healthCheck = async (c: Context) => {
   try {
-    console.log('Health check requested');
+    devLog('Health check requested');
     
     // Test KV store connection
     const connectionOk = await kv.testConnection();
     
     if (!connectionOk) {
-      console.log('Database connection test failed, running in fallback mode');
+      devLog('Database connection test failed, running in fallback mode');
       return c.json({ 
         success: true, // Still return success but indicate fallback mode
         message: 'Server is healthy (fallback mode - database connectivity issues)',
@@ -481,7 +482,7 @@ export const healthCheck = async (c: Context) => {
     const projectIds = await kv.get('project:ids') || [];
     const initialized = await kv.get('projects:initialized') || false;
     
-    console.log('Health check passed - all systems operational');
+    devLog('Health check passed - all systems operational');
     return c.json({ 
       success: true, 
       message: 'Server is healthy (database connected)',

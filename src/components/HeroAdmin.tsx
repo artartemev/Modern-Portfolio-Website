@@ -11,6 +11,7 @@ import { Save, RefreshCcw, User, FileText, Link, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import defaultHeroImage from '@/assets/2b3e7bb5588c3528566a362c8af4a578b7ffaf86.png';
+import devLog from '../utils/devLog';
 
 interface HeroData {
   name: string;
@@ -50,7 +51,7 @@ export function HeroAdmin() {
   const loadHeroData = async () => {
     try {
       setLoading(true);
-      console.log('Loading hero data from API...');
+      devLog('Loading hero data from API...');
       
       const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-32d29310/hero`, {
         headers: {
@@ -63,7 +64,7 @@ export function HeroAdmin() {
       }
       
       const result = await response.json();
-      console.log('Hero API response:', result);
+      devLog('Hero API response:', result);
       
       if (result.success) {
         setHeroData(result.hero || DEFAULT_HERO_DATA);
@@ -97,7 +98,7 @@ export function HeroAdmin() {
   const saveHeroData = async () => {
     try {
       setSaving(true);
-      console.log('Saving hero data:', heroData);
+      devLog('Saving hero data:', heroData);
       
       const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-32d29310/hero`, {
         method: 'PUT',
@@ -113,7 +114,7 @@ export function HeroAdmin() {
       }
       
       const result = await response.json();
-      console.log('Save hero response:', result);
+      devLog('Save hero response:', result);
       
       if (result.success) {
         setHeroData(result.hero);

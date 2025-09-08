@@ -4,6 +4,7 @@ import { logger } from 'hono/logger';
 import { createClient } from '@supabase/supabase-js';
 import { initializeDatabase } from './initialization.tsx';
 import * as routes from './routes.tsx';
+import devLog from '../../../utils/devLog.ts';
 
 const app = new Hono();
 
@@ -14,7 +15,7 @@ app.use('*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.use('*', logger(console.log));
+app.use('*', logger(devLog));
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -23,27 +24,27 @@ const supabase = createClient(
 );
 
 // Initialize database on startup
-console.log('Server starting up...');
-console.log('Environment check:');
-console.log('- SUPABASE_URL:', Deno.env.get('SUPABASE_URL') ? 'Set' : 'Missing');
-console.log('- SUPABASE_SERVICE_ROLE_KEY:', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ? 'Set' : 'Missing');
+devLog('Server starting up...');
+devLog('Environment check:');
+devLog('- SUPABASE_URL:', Deno.env.get('SUPABASE_URL') ? 'Set' : 'Missing');
+devLog('- SUPABASE_SERVICE_ROLE_KEY:', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ? 'Set' : 'Missing');
 
 // Initialize database and projects (with better error handling)
 const initializeApp = async () => {
   try {
-    console.log('Initializing database...');
+    devLog('Initializing database...');
     await initializeDatabase();
-    console.log('Database initialization completed successfully');
+    devLog('Database initialization completed successfully');
   } catch (error) {
     console.error('Database initialization failed:', error);
-    console.log('Server will continue in fallback mode with sample data');
+    devLog('Server will continue in fallback mode with sample data');
   }
 };
 
 // Initialize asynchronously but don't block server startup
 initializeApp().catch((error) => {
   console.error('Async initialization error:', error);
-  console.log('Server continuing in fallback mode');
+  devLog('Server continuing in fallback mode');
 });
 
 // Routes
@@ -69,6 +70,6 @@ app.get('/', (c) => {
   });
 });
 
-console.log('Routes registered successfully');
-console.log('Starting Deno server...');
+devLog('Routes registered successfully');
+devLog('Starting Deno server...');
 Deno.serve(app.fetch);
