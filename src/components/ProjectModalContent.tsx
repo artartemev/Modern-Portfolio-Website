@@ -24,6 +24,8 @@ export function ProjectModalContent({
 }: ProjectModalContentProps) {
   // Function to render media item
   const renderMediaItem = (mediaItem: MediaItem, index: number) => {
+    if (!mediaItem.url) return null;
+
     return (
       <motion.div
         key={mediaItem.id}
@@ -75,7 +77,8 @@ export function ProjectModalContent({
   const renderContentBlock = (block: ContentBlock, index: number) => {
     const hasTitle = block.title && block.title.trim();
     const hasContent = block.content && block.content.trim();
-    const hasMedia = block.media && block.media.length > 0;
+    const mediaItems = Array.isArray(block.media) ? block.media.filter(m => m.url) : [];
+    const hasMedia = mediaItems.length > 0;
     
     // Don't render empty blocks
     if (!hasTitle && !hasContent && !hasMedia) return null;
@@ -113,7 +116,7 @@ export function ProjectModalContent({
               <div className="flex items-center gap-2 mb-4">
                 <Image className="w-5 h-5 text-purple-300" />
                 <span className="text-white/60 font-['Anonymous_Pro'] uppercase tracking-wide text-sm">
-                  Media ({block.media.length})
+                  Media ({mediaItems.length})
                 </span>
               </div>
             ) : null}
@@ -121,7 +124,7 @@ export function ProjectModalContent({
               columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
             >
               <Masonry gutter="16px">
-                {block.media.map((mediaItem, mediaIndex) => renderMediaItem(mediaItem, mediaIndex))}
+                {mediaItems.map((mediaItem, mediaIndex) => renderMediaItem(mediaItem, mediaIndex))}
               </Masonry>
             </ResponsiveMasonry>
           </div>

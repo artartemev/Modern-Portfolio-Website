@@ -11,8 +11,14 @@ export const getSafeProjectData = (project: Project) => {
     safeCategories: Array.isArray(project.category) ? project.category : [project.category].filter(Boolean),
     safeTechnologies: Array.isArray(project.technologies) ? project.technologies : [],
     safeGalleryImages: Array.isArray(project.gallery_images) ? project.gallery_images : [],
-    safeContentBlocks: Array.isArray(project.content_blocks) ? 
-      project.content_blocks.sort((a, b) => a.order - b.order) : []
+    safeContentBlocks: Array.isArray(project.content_blocks)
+      ? project.content_blocks
+          .sort((a, b) => a.order - b.order)
+          .map(block => ({
+            ...block,
+            media: Array.isArray(block.media) ? block.media.filter(m => m.url) : []
+          }))
+      : []
   };
 };
 
