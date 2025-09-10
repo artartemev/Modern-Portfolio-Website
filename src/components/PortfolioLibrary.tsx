@@ -235,7 +235,7 @@ export function PortfolioLibrary() {
           )}
         </motion.div>
 
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
             <DrawerTrigger asChild>
               <Button variant="outline" size="icon" className="mb-8">
@@ -248,14 +248,14 @@ export function PortfolioLibrary() {
           </Drawer>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:col-span-1 hidden lg:block">
+          <div className="md:col-span-1 hidden md:block">
             <FilterControls {...filterControlsProps} />
           </div>
 
           {/* Projects Grid/List */}
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             <motion.div
               className="mb-6"
               initial={{ opacity: 0 }}
