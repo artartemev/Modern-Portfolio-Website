@@ -49,8 +49,7 @@ export function HeroAdmin() {
   const loadHeroData = async () => {
     try {
       setLoading(true);
-      console.log('Loading hero data from API...');
-      
+
       const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-32d29310/hero`, {
         headers: {
           'Authorization': `Bearer ${publicAnonKey}`,
@@ -62,7 +61,6 @@ export function HeroAdmin() {
       }
       
       const result = await response.json();
-      console.log('Hero API response:', result);
       
       if (result.success) {
         setHeroData(result.hero || DEFAULT_HERO_DATA);
@@ -96,8 +94,7 @@ export function HeroAdmin() {
   const saveHeroData = async () => {
     try {
       setSaving(true);
-      console.log('Saving hero data:', heroData);
-      
+
       const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-32d29310/hero`, {
         method: 'PUT',
         headers: {
@@ -112,7 +109,6 @@ export function HeroAdmin() {
       }
       
       const result = await response.json();
-      console.log('Save hero response:', result);
       
       if (result.success) {
         setHeroData(result.hero);

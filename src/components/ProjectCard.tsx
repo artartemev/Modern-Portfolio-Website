@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { ExternalLink, Github, Calendar } from 'lucide-react';
@@ -34,10 +35,9 @@ interface ProjectCardProps {
   onClick: (project: Project) => void;
 }
 
-export function ProjectCard({ project, onClick }: ProjectCardProps) {
+function ProjectCardComponent({ project, onClick }: ProjectCardProps) {
   // Safety checks for required fields
   if (!project || !project.title || !project.tags) {
-    console.warn('ProjectCard received invalid project data:', project);
     return null;
   }
 
@@ -200,3 +200,5 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
     </motion.div>
   );
 }
+
+export const ProjectCard = memo(ProjectCardComponent);

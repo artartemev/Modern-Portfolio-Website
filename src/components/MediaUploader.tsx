@@ -57,7 +57,6 @@ export function MediaUploader({
       name: urlInput.split('/').pop()?.split('?')[0] || 'Media'
     };
 
-    console.log(`Adding media to block ${blockId}:`, newMedia);
     onMediaChange([...media, newMedia]);
     setUrlInput('');
     toast.success('Media added successfully');
@@ -114,8 +113,6 @@ export function MediaUploader({
           name: file.name
         };
 
-        console.log(`Adding file to block ${blockId}:`, mediaItem);
-
         newMediaItems.push(mediaItem);
       }
 
@@ -140,7 +137,6 @@ export function MediaUploader({
   };
 
   const handleRemove = (id: string) => {
-    console.log(`Removing media ${id} from block ${blockId}`);
     const updatedMedia = media.filter(item => item.id !== id);
     onMediaChange(updatedMedia);
     toast.success('Media removed');

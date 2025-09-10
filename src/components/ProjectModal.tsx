@@ -25,9 +25,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
     safeContentBlocks
   } = getSafeProjectData(project);
 
-  // Debug content blocks
-  console.log('ProjectModal - Content blocks for project:', safeTitle, safeContentBlocks);
-
   const categoryLabels = getCategoryLabels(safeCategories);
   const projectImage = getProjectImage(project, safeCategories);
   const galleryImages = getGalleryImages(safeGalleryImages, projectImage);

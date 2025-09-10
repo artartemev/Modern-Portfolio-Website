@@ -50,8 +50,7 @@ export function CaseContentBlocks({
   };
 
   const updateBlock = (id: string, updates: Partial<ContentBlock>) => {
-    console.log(`Updating block ${id}:`, updates);
-    const updatedBlocks = blocks.map(block => 
+    const updatedBlocks = blocks.map(block =>
       block.id === id ? { ...block, ...updates } : block
     );
     onBlocksChange(updatedBlocks);
