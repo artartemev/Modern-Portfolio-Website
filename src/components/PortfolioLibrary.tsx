@@ -259,9 +259,9 @@ export function PortfolioLibrary() {
           </DrawerContent>
         </Drawer>
 
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-4 gap-8 items-start">
           {/* Filters Sidebar */}
-          <div className="md:col-span-1 hidden md:block">
+          <div className="hidden md:block md:col-span-1 md:sticky md:top-0">
             <FilterControls {...filterControlsProps} />
           </div>
 
