@@ -18,7 +18,6 @@ export function ApiDebug() {
 
       try {
         // Test health check
-        console.log('Testing health check...');
         const healthResult = await projectApi.healthCheck();
         info.healthCheck = {
           success: healthResult.success,
@@ -35,7 +34,6 @@ export function ApiDebug() {
 
       try {
         // Test projects fetch
-        console.log('Testing projects fetch...');
         const projects = await projectApi.getProjects();
         info.projects = { count: projects.length, success: true };
       } catch (error) {
@@ -44,7 +42,6 @@ export function ApiDebug() {
 
       try {
         // Test tags fetch
-        console.log('Testing tags fetch...');
         const tags = await projectApi.getTags();
         info.tags = { count: tags.length, success: true };
       } catch (error) {

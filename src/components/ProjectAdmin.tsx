@@ -95,8 +95,6 @@ export function ProjectAdmin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('Submitting project with content blocks:', formData.contentBlocks);
-    
     try {
       if (editingProject) {
         // Update existing project - transform formData to Project format
@@ -425,7 +423,6 @@ export function ProjectAdmin() {
                       <CaseContentBlocks
                         blocks={formData.contentBlocks}
                         onBlocksChange={(blocks) => {
-                          console.log('Content blocks changed:', blocks);
                           setFormData({ ...formData, contentBlocks: blocks });
                         }}
                       />

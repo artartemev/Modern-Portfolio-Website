@@ -1,8 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ProjectCard } from './ProjectCard';
 import { ProjectListView } from './ProjectListView';
-import { ProjectModal } from './ProjectModal';
 import { FilterControls } from './FilterControls';
 import { LoadingState, ErrorState, EmptyState } from './LoadingState';
 import { projectApi, type Project } from '../utils/api';
@@ -10,6 +9,8 @@ import { FALLBACK_PROJECTS, FALLBACK_TAGS } from '../utils/constants';
 import { Button } from './ui/button';
 import { Drawer, DrawerTrigger, DrawerContent } from './ui/drawer';
 import { Filter } from 'lucide-react';
+
+const ProjectModal = lazy(() => import('./ProjectModal'));
 
 export function PortfolioLibrary() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -35,55 +36,41 @@ export function PortfolioLibrary() {
         setError(null);
         setUsingFallbackData(false);
         
-        console.log('Starting to load portfolio data...');
-        
         // Try to load data from API
         const [projectsData, tagsData] = await Promise.all([
           projectApi.getProjects(),
           projectApi.getTags()
         ]);
-        
-        console.log('Loaded projects from API:', projectsData);
-        console.log('Loaded tags from API:', tagsData);
-        
+
         // Validate and use API data if available
         if (Array.isArray(projectsData) && projectsData.length > 0) {
           setProjects(projectsData);
           setAvailableTags(Array.isArray(tagsData) ? tagsData : []);
-          console.log('Using API data successfully');
         } else {
           throw new Error('No projects returned from API');
         }
       } catch (err) {
         console.error('API failed, using fallback data:', err);
-        
+
         // Immediately use fallback data when API fails
         try {
-          console.log('Loading fallback data...');
-          console.log('Fallback projects:', FALLBACK_PROJECTS);
-          console.log('Fallback tags:', FALLBACK_TAGS);
-          
           // Validate fallback data structure
           const validFallbackProjects = FALLBACK_PROJECTS.filter(project => {
-            const isValid = project && 
-              typeof project === 'object' && 
-              typeof project.title === 'string' && 
+            const isValid = project &&
+              typeof project === 'object' &&
+              typeof project.title === 'string' &&
               project.title.length > 0 &&
               Array.isArray(project.tags) &&
               Array.isArray(project.category);
-            
-            if (!isValid) {
-              console.warn('Invalid fallback project:', project);
-            }
+
             return isValid;
           });
-          
+
           if (validFallbackProjects.length > 0) {
             setProjects(validFallbackProjects);
             setAvailableTags(Array.isArray(FALLBACK_TAGS) ? FALLBACK_TAGS : []);
             setUsingFallbackData(true);
             setError(null); // Clear any error since fallback worked
-            console.log(`Successfully loaded ${validFallbackProjects.length} fallback projects`);
           } else {
             throw new Error('Fallback data validation failed');
           }
@@ -147,27 +134,27 @@ export function PortfolioLibrary() {
     });
   }, [projects, selectedCategories, selectedYear, selectedTags, showTopOnly]);
 
-  const handleTagToggle = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
+  const handleTagToggle = useCallback((tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
     );
-  };
+  }, []);
 
-  const handleProjectClick = (project: Project) => {
+  const handleProjectClick = useCallback((project: Project) => {
     if (!project || !project.title) {
       console.error('Invalid project clicked:', project);
       return;
     }
     setSelectedProject(project);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
     setSelectedProject(null);
-  };
+  }, []);
 
   const filterControlsProps = {
     selectedCategories,
@@ -346,11 +333,15 @@ export function PortfolioLibrary() {
       </div>
 
       {/* Project Modal */}
-      <ProjectModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-      />
+      {isModalOpen && selectedProject && (
+        <Suspense fallback={<div className="fixed inset-0 flex items-center justify-center" /> }>
+          <ProjectModal
+            project={selectedProject}
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+          />
+        </Suspense>
+      )}
     </section>
   );
 }

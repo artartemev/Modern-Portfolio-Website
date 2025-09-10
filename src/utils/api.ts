@@ -123,9 +123,6 @@ const transformApiProject = (apiProject: ApiProject): Project => {
 
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`Making API call to: ${url}`);
-  }
 
   try {
     const response = await fetch(url, {
@@ -137,16 +134,8 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
       },
     });
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Response status: ${response.status}`);
-      console.log(`Response ok: ${response.ok}`);
-    }
-
     if (!response.ok) {
       const errorText = await response.text();
-      if (process.env.NODE_ENV === 'development') {
-        console.error(`API Error Response: ${errorText}`);
-      }
       let errorData: any = {};
       try {
         errorData = JSON.parse(errorText);
@@ -156,9 +145,6 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
 
       // Check for specific connectivity issues
       if (response.status === 503 && errorData.fallbackMode) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('API returned 503 with fallback mode - database connectivity issues');
-        }
         throw new Error(`Database connectivity issue: ${errorData.message || 'Database unavailable'}`);
       }
       
@@ -166,15 +152,6 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     }
 
     const result = await response.json();
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`API Success Response:`, result);
-    }
-
-    // Log if we're running in fallback mode
-    if (result.fallbackMode && process.env.NODE_ENV === 'development') {
-      console.log('API is running in fallback mode:', result.message);
-    }
-
     return result;
   } catch (error) {
     console.error(`API Call failed for ${url}:`, error);
@@ -198,13 +175,9 @@ export const projectApi = {
     try {
       const result = await apiCall('/projects');
       const apiProjects = result.projects || [];
-      
-      console.log('Raw API projects:', apiProjects);
-      
+
       // If we got fallback data, it might already be in the correct format
       if (result.message && result.message.includes('fallback')) {
-        console.log('Using fallback data from server');
-        // Try to transform if needed, otherwise return as-is
         try {
           const transformedProjects = apiProjects
             .filter((project: any) => project && typeof project === 'object')
@@ -216,15 +189,13 @@ export const projectApi = {
               // Otherwise try to transform
               return transformApiProject(project);
             });
-          
-          console.log('Transformed fallback projects:', transformedProjects);
+
           return transformedProjects;
         } catch (transformError) {
-          console.warn('Failed to transform fallback data, using local fallback:', transformError);
           return FALLBACK_PROJECTS;
         }
       }
-      
+
       // Transform each API project to our expected format
       const transformedProjects = apiProjects
         .filter((project: any) => project && typeof project === 'object')
@@ -232,17 +203,14 @@ export const projectApi = {
           try {
             return transformApiProject(apiProject);
           } catch (transformError) {
-            console.warn('Failed to transform project:', apiProject, transformError);
             return null;
           }
         })
         .filter((project: Project | null): project is Project => project !== null);
-      
-      console.log('Transformed projects:', transformedProjects);
+
       return transformedProjects;
     } catch (error) {
       console.error('Error fetching projects, using fallback data:', error);
-      console.log('Returning local fallback projects');
       return FALLBACK_PROJECTS;
     }
   },
