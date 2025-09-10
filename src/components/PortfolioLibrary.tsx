@@ -261,14 +261,14 @@ export function PortfolioLibrary() {
           </Drawer>
         </div>
 
-        <div className="md:grid md:grid-cols-[16rem_1fr] gap-8 items-start">
+        <div className="md:grid md:grid-cols-4 gap-8 items-start">
           {/* Filters Sidebar */}
-          <div className="hidden md:block md:sticky md:top-24">
+          <div className="hidden md:block md:col-span-1 md:sticky md:top-24">
             <FilterControls {...filterControlsProps} />
           </div>
 
           {/* Projects Grid/List */}
-          <div>
+          <div className="md:col-span-3">
             <motion.div
               className="mb-6"
               initial={{ opacity: 0 }}
