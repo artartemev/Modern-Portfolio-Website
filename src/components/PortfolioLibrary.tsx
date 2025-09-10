@@ -248,16 +248,18 @@ export function PortfolioLibrary() {
           )}
         </motion.div>
 
-        <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
-          <DrawerTrigger asChild>
-            <Button variant="outline" size="icon" className="mb-8 lg:hidden">
-              <Filter className="h-4 w-4" />
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent className="p-4">
-            <FilterControls {...filterControlsProps} className="block" />
-          </DrawerContent>
-        </Drawer>
+        <div className="lg:hidden">
+          <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
+            <DrawerTrigger asChild>
+              <Button variant="outline" size="icon" className="mb-8">
+                <Filter className="h-4 w-4" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="p-4">
+              <FilterControls {...filterControlsProps} className="block" />
+            </DrawerContent>
+          </Drawer>
+        </div>
 
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
