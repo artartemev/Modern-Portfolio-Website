@@ -248,25 +248,27 @@ export function PortfolioLibrary() {
           )}
         </motion.div>
 
-        <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
-          <DrawerTrigger asChild>
-            <Button variant="outline" size="icon" className="mb-8 md:hidden">
-              <Filter className="h-4 w-4" />
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent className="p-4">
-            <FilterControls {...filterControlsProps} className="block" />
-          </DrawerContent>
-        </Drawer>
+        <div className="lg:hidden">
+          <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
+            <DrawerTrigger asChild>
+              <Button variant="outline" size="icon" className="mb-8">
+                <Filter className="h-4 w-4" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="p-4">
+              <FilterControls {...filterControlsProps} className="block" />
+            </DrawerContent>
+          </Drawer>
+        </div>
 
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
-          <div className="md:col-span-1 hidden md:block">
+          <div className="lg:col-span-1 hidden lg:block">
             <FilterControls {...filterControlsProps} />
           </div>
 
           {/* Projects Grid/List */}
-          <div className="md:col-span-3">
+          <div className="lg:col-span-3">
             <motion.div
               className="mb-6"
               initial={{ opacity: 0 }}
