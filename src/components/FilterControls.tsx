@@ -51,7 +51,7 @@ export function FilterControls({
   };
 
   return (
-    <div className={cn('hidden md:block', className)}>
+    <div className={cn(className)}>
       <motion.div
         className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6 space-y-6"
         initial={{ opacity: 0, x: -20 }}
