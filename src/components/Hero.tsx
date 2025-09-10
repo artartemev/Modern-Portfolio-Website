@@ -26,7 +26,6 @@ const DEFAULT_HERO_DATA: HeroData = {
 
 export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
   const heroData = DEFAULT_HERO_DATA;
-
   const textRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -92,6 +91,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
       </div>
 
       <div className="container mx-auto px-8 relative z-10">
+
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Avatar section */}
           <motion.div
@@ -108,8 +108,8 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
               onClick={handleAdminClick}
             />
           </motion.div>
-
           {/* Content section */}
+        <div className="flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -133,7 +133,31 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
                 initial={{ width: 0 }}
                 animate={{ width: 96 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
+            <div className="flex items-center gap-4">
+              <img
+                src={adminAvatar}
+                alt="Admin avatar"
+                className="w-16 h-16 rounded-full cursor-pointer"
+                onClick={handleAdminClick}
               />
+              <div className="space-y-4">
+                <motion.h1
+                  className="font-['Anonymous_Pro'] tracking-[0.2em] uppercase text-[#323232]"
+                  style={{ fontSize: 'clamp(2rem, 8vw, 6rem)', fontWeight: 'bold', lineHeight: '0.9' }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  {heroData.name}
+                </motion.h1>
+
+                <motion.div
+                  className="h-1 w-24 bg-gradient-to-r from-[#323232] to-transparent"
+                  initial={{ width: 0 }}
+                  animate={{ width: 96 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                />
+              </div>
             </div>
 
             <motion.div
