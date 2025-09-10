@@ -247,7 +247,6 @@ export function PortfolioLibrary() {
             </motion.div>
           )}
         </motion.div>
-
         <div className="md:hidden">
           <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen} direction="left">
             <DrawerTrigger asChild>

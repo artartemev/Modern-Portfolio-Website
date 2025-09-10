@@ -102,9 +102,32 @@ export function MediaUploader({
           continue;
         }
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('case-media')
-          .getPublicUrl(filePath);
+        // Try to get a public URL. If the bucket is private or not configured
+        // for public access, fall back to a long-lived signed URL so the
+        // uploaded media can still be displayed in the project.
+        let publicUrl = '';
+        try {
+          const { data } = supabase.storage
+            .from('case-media')
+            .getPublicUrl(filePath);
+          publicUrl = data?.publicUrl || '';
+        } catch (err) {
+          console.warn('Failed to get public URL, will attempt signed URL:', err);
+        }
+
+        // If no public URL (e.g. private bucket), create a signed URL that
+        // lasts for one year. This ensures images are accessible in the app
+        // without requiring the bucket to be fully public.
+        if (!publicUrl) {
+          try {
+            const { data } = await supabase.storage
+              .from('case-media')
+              .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year
+            publicUrl = data?.signedUrl || '';
+          } catch (err) {
+            console.error('Failed to create signed URL:', err);
+          }
+        }
 
         const mediaItem: MediaItem = {
           id: uniqueId,
