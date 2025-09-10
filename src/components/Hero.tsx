@@ -1,6 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
-import { heroApi, type HeroData } from '../utils/api';
+
+interface HeroData {
+  name: string;
+  title: string;
+  description: string;
+  skills: string;
+  expertise: string;
+  primaryButtonText: string;
+  secondaryButtonText: string;
+  contactLink: string;
+  image: string;
+}
 
 const DEFAULT_HERO_DATA: HeroData = {
   name: 'Artem',
@@ -15,26 +26,8 @@ const DEFAULT_HERO_DATA: HeroData = {
 };
 
 export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
-  const [heroData, setHeroData] = useState<HeroData>(DEFAULT_HERO_DATA);
-  const [isLoading, setIsLoading] = useState(false);
+  const heroData = DEFAULT_HERO_DATA;
   const [clickCount, setClickCount] = useState(0);
-
-  useEffect(() => {
-    loadHeroData();
-  }, []);
-
-  const loadHeroData = async () => {
-    try {
-      setIsLoading(true);
-      const data = await heroApi.getHeroData();
-      setHeroData(data);
-    } catch (error) {
-      console.error('Failed to load hero data:', error);
-      // Keep using default data
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const scrollToPortfolio = () => {
     const portfolioSection = document.querySelector('[data-section="portfolio"]');
