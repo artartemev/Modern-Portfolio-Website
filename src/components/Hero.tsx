@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { useEffect, useRef } from 'react';
 import adminAvatar from '../assets/admin-avatar.png';
 
 interface HeroData {
@@ -26,22 +25,6 @@ const DEFAULT_HERO_DATA: HeroData = {
 
 export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
   const heroData = DEFAULT_HERO_DATA;
-  const textRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    const adjustAvatarSize = () => {
-      if (textRef.current && imgRef.current) {
-        const textHeight = textRef.current.offsetHeight;
-        const newSize = textHeight * 1.2;
-        imgRef.current.style.height = `${newSize}px`;
-        imgRef.current.style.width = `${newSize}px`;
-      }
-    };
-    adjustAvatarSize();
-    window.addEventListener('resize', adjustAvatarSize);
-    return () => window.removeEventListener('resize', adjustAvatarSize);
-  }, []);
 
   const scrollToPortfolio = () => {
     const portfolioSection = document.querySelector('[data-section="portfolio"]');
@@ -90,16 +73,16 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
       </div>
 
       <div className="container mx-auto px-8 relative z-10">
-        <div className="flex items-start gap-12">
-          <img
-            ref={imgRef}
-            src={adminAvatar}
-            alt="Admin avatar"
-            className="rounded-full cursor-pointer"
-            onClick={handleAdminClick}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
+          <div className="flex justify-center md:justify-start">
+            <img
+              src={adminAvatar}
+              alt="Admin avatar"
+              className="w-full max-w-xs md:max-w-md rounded-full cursor-pointer"
+              onClick={handleAdminClick}
+            />
+          </div>
           <motion.div
-            ref={textRef}
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
