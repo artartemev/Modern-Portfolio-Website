@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import adminAvatar from '../assets/admin-avatar.png';
 
@@ -25,6 +26,24 @@ const DEFAULT_HERO_DATA: HeroData = {
 
 export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
   const heroData = DEFAULT_HERO_DATA;
+
+  const textRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const adjustAvatarSize = () => {
+      if (textRef.current && imgRef.current) {
+        const textHeight = textRef.current.offsetHeight;
+        const avatarSize = textHeight * 1.2;
+        imgRef.current.style.height = `${avatarSize}px`;
+        imgRef.current.style.width = `${avatarSize}px`;
+      }
+    };
+
+    adjustAvatarSize();
+    window.addEventListener('resize', adjustAvatarSize);
+    return () => window.removeEventListener('resize', adjustAvatarSize);
+  }, []);
 
   const scrollToPortfolio = () => {
     const portfolioSection = document.querySelector('[data-section="portfolio"]');
@@ -79,12 +98,13 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex justify-center"
+            className="flex justify-center items-center overflow-visible"
           >
             <img
+              ref={imgRef}
               src={adminAvatar}
               alt="Admin avatar"
-              className="w-24 h-24 md:w-32 md:h-32 rounded-full cursor-pointer"
+              className="rounded-full cursor-pointer object-cover"
               onClick={handleAdminClick}
             />
           </motion.div>
@@ -95,6 +115,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-8"
+            ref={textRef}
           >
             <div className="space-y-4">
               <motion.h1
