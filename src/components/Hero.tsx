@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { motion } from 'motion/react';
+import adminAvatar from '../assets/admin-avatar.png';
 
 interface HeroData {
   name: string;
@@ -10,7 +10,6 @@ interface HeroData {
   primaryButtonText: string;
   secondaryButtonText: string;
   contactLink: string;
-  image: string;
 }
 
 const DEFAULT_HERO_DATA: HeroData = {
@@ -21,13 +20,11 @@ const DEFAULT_HERO_DATA: HeroData = {
   expertise: 'Client communication • Business process optimization • Visual concept creation • Social media promotion',
   primaryButtonText: 'View Portfolio',
   secondaryButtonText: 'Contact Me',
-  contactLink: 'https://t.me/artartemev',
-  image: ''
+  contactLink: 'https://t.me/artartemev'
 };
 
 export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
   const heroData = DEFAULT_HERO_DATA;
-  const [clickCount, setClickCount] = useState(0);
 
   const scrollToPortfolio = () => {
     const portfolioSection = document.querySelector('[data-section="portfolio"]');
@@ -36,15 +33,10 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
     }
   };
 
-  const handleImageClick = () => {
-    const newCount = clickCount + 1;
-    setClickCount(newCount);
-    if (newCount >= 8) {
-      const password = window.prompt('Enter admin password');
-      if (password === 'goura') {
-        onUnlockAdmin?.();
-      }
-      setClickCount(0);
+  const handleAdminClick = () => {
+    const password = window.prompt('Enter admin password');
+    if (password === 'goura') {
+      onUnlockAdmin?.();
     }
   };
   return (
@@ -81,28 +73,23 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
       </div>
 
       <div className="container mx-auto px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Image Section */}
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          {/* Avatar section */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="flex justify-center"
           >
-            <div className="relative">
-              {heroData.image && (
-                <img
-                  src={heroData.image}
-                  alt={`${heroData.name} - ${heroData.title}`}
-                  className="w-full max-w-md mx-auto rounded-2xl shadow-2xl object-cover aspect-[4/5]"
-                  onClick={handleImageClick}
-                  loading="lazy"
-                />
-              )}
-            </div>
+            <img
+              src={adminAvatar}
+              alt="Admin avatar"
+              className="w-24 h-24 md:w-32 md:h-32 rounded-full cursor-pointer"
+              onClick={handleAdminClick}
+            />
           </motion.div>
 
-          {/* Content Section */}
+          {/* Content section */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -119,7 +106,7 @@ export function Hero({ onUnlockAdmin }: { onUnlockAdmin?: () => void }) {
               >
                 {heroData.name}
               </motion.h1>
-              
+
               <motion.div
                 className="h-1 w-24 bg-gradient-to-r from-[#323232] to-transparent"
                 initial={{ width: 0 }}
