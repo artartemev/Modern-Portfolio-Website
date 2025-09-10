@@ -1,4 +1,4 @@
-import { DEFAULT_IMAGES, type Project } from './projectModalConstants';
+import type { Project } from './projectModalConstants';
 import { CATEGORIES } from './constants';
 
 // Helper function to get safe project data
@@ -11,8 +11,14 @@ export const getSafeProjectData = (project: Project) => {
     safeCategories: Array.isArray(project.category) ? project.category : [project.category].filter(Boolean),
     safeTechnologies: Array.isArray(project.technologies) ? project.technologies : [],
     safeGalleryImages: Array.isArray(project.gallery_images) ? project.gallery_images : [],
-    safeContentBlocks: Array.isArray(project.content_blocks) ? 
-      project.content_blocks.sort((a, b) => a.order - b.order) : []
+    safeContentBlocks: Array.isArray(project.content_blocks)
+      ? project.content_blocks
+          .sort((a, b) => a.order - b.order)
+          .map(block => ({
+            ...block,
+            media: Array.isArray(block.media) ? block.media.filter(m => m.url) : []
+          }))
+      : []
   };
 };
 
@@ -25,15 +31,12 @@ export const getCategoryLabels = (categories: string[]) => {
 };
 
 // Helper function to get project image
-export const getProjectImage = (project: Project, safeCategories: string[]) => {
-  if (project.image_url) return project.image_url;
-  
-  const primaryCategory = safeCategories[0];
-  return DEFAULT_IMAGES[primaryCategory as keyof typeof DEFAULT_IMAGES] || DEFAULT_IMAGES.web;
+export const getProjectImage = (project: Project) => {
+  return project.image_url || '';
 };
 
 // Helper function to get gallery images (only real images, no mock data)
-export const getGalleryImages = (safeGalleryImages: string[], projectImage: string) => {
+export const getGalleryImages = (safeGalleryImages: string[]) => {
   // Only return actual gallery images from the admin panel
   return safeGalleryImages.length > 0 ? safeGalleryImages : [];
 };

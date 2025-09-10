@@ -26,8 +26,8 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
   } = getSafeProjectData(project);
 
   const categoryLabels = getCategoryLabels(safeCategories);
-  const projectImage = getProjectImage(project, safeCategories);
-  const galleryImages = getGalleryImages(safeGalleryImages, projectImage);
+  const projectImage = getProjectImage(project);
+  const galleryImages = getGalleryImages(safeGalleryImages);
   
   // Collect all images from content blocks for gallery navigation
   const allGalleryImages = [...galleryImages];
