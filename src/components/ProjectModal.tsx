@@ -123,3 +123,5 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
     </>
   );
 }
+
+export default ProjectModal;
